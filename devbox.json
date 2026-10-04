@@ -8,7 +8,7 @@
       "test": ". $VENV_DIR/bin/activate && cd backend && pip install -q -e '.[dev]' && pytest -v && cd ../frontend && npm install --silent && npm test",
       "fmt": "prettier --write .",
       "fmt:check": "prettier --check .",
-      "install-hooks": "echo 'implemented in Task 8'"
+      "install-hooks": "./scripts/install-hooks.sh"
     }
   }
 }
