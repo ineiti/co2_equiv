@@ -70,14 +70,16 @@ files are correctly formatted.
 All direct dependencies are handled with devbox.json, so that
 it can be run locally as well as in docker.
 Run, in three separate terminals: "devbox run llm", then
-"devbox run backend", then "devbox run front".
+"devbox run backend", then "devbox run front". Then open
+http://localhost:8081 in a browser to use the full stack locally.
 Run "devbox run test" to run all backend and frontend tests.
 Run "devbox run install-hooks" once to set up the local
 prettier pre-commit check.
 
-Note: "devbox run front" serves the frontend as plain static
-files with no `/api` proxy, so it cannot complete a real
-estimate on its own, even with the other two running. To
-exercise the full flow locally, use `docker compose up --build`
-instead, which wires the three services together through nginx
-exactly as they run in production.
+"devbox run front" runs frontend/dev-server.mjs, a small Node
+static file server that also proxies `/api/*` to the backend
+(mirroring what frontend/nginx.conf does in production), so the
+three "devbox run" processes together are enough to exercise the
+full flow locally without docker. `docker compose up --build`
+remains available to run the stack exactly as it runs in
+production.

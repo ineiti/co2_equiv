@@ -21,14 +21,6 @@ section 10 for the original list):
   (as of 30.1.2) does not execute `<script type="module">` tags —
   any future headless test of index.js needs to set `document`/
   `window` as globals and `import()` the module directly instead.
-- Local dev's "devbox run front" serves static files directly with
-  no /api proxy, so the live full flow (frontend+backend+llm talking
-  to each other) can currently only be exercised via
-  "docker compose up", not via the three separate "devbox run"
-  processes. If pure-local full-flow testing becomes important,
-  consider adding a small dev-only proxy (e.g. via Python's
-  http.server with a CGI/WSGI shim, or switching index.js to call
-  an absolute backend URL in dev mode).
 - English-only prompt and UI; no i18n.
 - ghcr.io/ggml-org/llama.cpp:server is referenced by tag (`:server`)
   rather than a pinned digest in docker-compose.yaml — consider
@@ -73,3 +65,11 @@ $backend_upstream$request_uri;` pattern instead of a plain
   `ENV SYSTEM_PROMPT_PATH=/app/SYSTEM_PROMPT.md` to override it —
   if the Dockerfile's `WORKDIR`/`COPY` layout ever changes, update
   that `ENV` line too.
+- `devbox run front` now runs `frontend/dev-server.mjs` (plain
+  Node, no extra deps) instead of `python3 -m http.server`, so it
+  serves the static files _and_ proxies `/api/*` to
+  `http://localhost:${BACKEND_PORT:-8000}`, matching
+  `frontend/nginx.conf`'s production behavior. This means
+  "devbox run llm && devbox run backend && devbox run front" (three
+  terminals, or backgrounded with `&`) is now enough to exercise the
+  full stack at http://localhost:8081 without docker compose.
