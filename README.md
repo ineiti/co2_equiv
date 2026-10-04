@@ -33,21 +33,27 @@ field.
 
 # Setup
 
-This tool uses two docker containers, configured in
-a docker-compose.yaml:
+This tool uses three docker containers, configured in
+a docker-compose.yaml. Only the first two are built by this
+repo's CI/CD and pushed to ghcr.io; the third is pulled as-is
+from upstream:
 
 - frontend - holds the html, the CSS and a short javascript
   which takes the html input, and sends it to the backend,
   then interprets the returned value and updates the
   distances shown
-- backend - an LLM, which is stored in ./data/llm,
-  and can be configured with an environment variable in .env,
-  pointing for example to
+- backend - a small FastAPI service which injects SYSTEM_PROMPT.md
+  as the system prompt, calls the llm container's OpenAI-compatible
+  API, validates the JSON shape it gets back, and returns it to
+  the frontend
+- llm - the official ghcr.io/ggml-org/llama.cpp:server image,
+  serving a GGUF model file stored in ./data/llm. The model itself
+  is downloaded by scripts/download-model.sh from a URL configured
+  via MODEL_URL in .env, for example
   https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF/blob/main/gemma-4-E4B-it-Q4_0.gguf
-  and which takes the question, and returns the JSON
-  produced by the LLM.
-  The SYSTEM_PROMPT.md tells the model to return a JSON
-  {"calc": "calculation", "co2": "x kg"}
+
+The SYSTEM_PROMPT.md tells the model to return a JSON
+{"calc": "calculation", "co2": "x kg"}
 
 # CI/CD
 
@@ -63,5 +69,8 @@ files are correctly formatted.
 
 All direct dependencies are handled with devbox.json, so that
 it can be run locally as well as in docker.
-Starting with "devbox run llm", followed by "devbox run front",
-allows to test it locally.
+Run, in three separate terminals: "devbox run llm", then
+"devbox run backend", then "devbox run front".
+Run "devbox run test" to run all backend and frontend tests.
+Run "devbox run install-hooks" once to set up the local
+prettier pre-commit check.
