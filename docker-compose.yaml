@@ -1,0 +1,28 @@
+services:
+  llm:
+    image: ghcr.io/ggml-org/llama.cpp:server
+    command: ['-m', '/models/model.gguf', '--host', '0.0.0.0', '--port', '8080']
+    volumes:
+      - ./data/llm:/models
+    expose:
+      - '8080'
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      - LLM_URL=http://llm:8080/v1/chat/completions
+    depends_on:
+      - llm
+    expose:
+      - '8000'
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - '${FRONTEND_PORT:-8081}:80'
+    depends_on:
+      - backend
