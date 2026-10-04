@@ -2,9 +2,48 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CO2 Equivalent Calculator</title>
+    <link rel="stylesheet" href="index.css" />
   </head>
   <body>
-    <p>Placeholder — replaced in Task 9.</p>
+    <main>
+      <h1>CO2 Equivalent Calculator</h1>
+      <p class="hint">
+        Describe an activity or item, e.g. "eating 150g of beef" or "forgot to turn off the office
+        light for 2h".
+      </p>
+      <form id="estimate-form">
+        <input id="text-input" type="text" placeholder="What did you do?" autocomplete="off" />
+        <button type="submit" id="estimate-button">ESTIMATE</button>
+      </form>
+      <p id="input-error" class="error" hidden>Please type something first.</p>
+      <div id="loading" hidden>
+        <span class="icon">✈️</span>
+        <span class="icon">🚗</span>
+        <span class="icon">🚆</span>
+        <p>Thinking...</p>
+      </div>
+      <div id="result" hidden>
+        <p id="calc-text"></p>
+        <p id="co2-text"></p>
+        <div class="distance-row">
+          <span class="icon">✈️</span>
+          <span id="plane-distance"></span>
+        </div>
+        <div class="distance-row">
+          <span class="icon">🚗</span>
+          <span id="car-distance"></span>
+        </div>
+        <div class="distance-row">
+          <span class="icon">🚆</span>
+          <span id="train-distance"></span>
+        </div>
+      </div>
+      <p id="fetch-error" class="error" hidden>
+        Could not get an estimate right now. Please try again.
+      </p>
+    </main>
+    <script type="module" src="index.js"></script>
   </body>
 </html>

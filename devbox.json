@@ -4,7 +4,7 @@
     "scripts": {
       "llm": "./scripts/download-model.sh && llama-server -m ./data/llm/model.gguf --port ${LLM_PORT:-8080}",
       "backend": ". $VENV_DIR/bin/activate && cd backend && pip install -q -e '.[dev]' && LLM_URL=http://localhost:${LLM_PORT:-8080}/v1/chat/completions uvicorn app.main:app --reload --port ${BACKEND_PORT:-8000}",
-      "front": "echo 'implemented in Task 9'",
+      "front": "cd frontend && python3 -m http.server ${FRONTEND_PORT:-8081}",
       "test": ". $VENV_DIR/bin/activate && cd backend && pip install -q -e '.[dev]' && pytest -v && cd ../frontend && npm install --silent && npm test",
       "fmt": "prettier --write .",
       "fmt:check": "prettier --check .",
