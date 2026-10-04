@@ -2,7 +2,7 @@
   "packages": ["llama-cpp@latest", "python@3.13", "nodejs@latest", "prettier@latest"],
   "shell": {
     "scripts": {
-      "llm": "echo 'implemented in Task 2'",
+      "llm": "./scripts/download-model.sh && llama-server -m ./data/llm/model.gguf --port ${LLM_PORT:-8080}",
       "backend": "echo 'implemented in Task 4'",
       "front": "echo 'implemented in Task 9'",
       "test": "echo 'implemented in Task 5'",
