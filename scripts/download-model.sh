@@ -27,6 +27,8 @@ if [ -f "$TARGET_FILE" ]; then
 fi
 
 mkdir -p "$TARGET_DIR"
+PART_FILE="$TARGET_FILE.part"
 echo "Downloading model from $MODEL_URL to $TARGET_FILE ..."
-curl -L --fail -o "$TARGET_FILE" "$MODEL_URL"
+curl -L --fail -o "$PART_FILE" "$MODEL_URL"
+mv "$PART_FILE" "$TARGET_FILE"
 echo "Done."

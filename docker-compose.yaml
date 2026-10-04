@@ -1,6 +1,7 @@
 services:
   llm:
-    image: ghcr.io/ggml-org/llama.cpp:server
+    # ghcr.io/ggml-org/llama.cpp:server, pinned by digest for reproducible builds.
+    image: ghcr.io/ggml-org/llama.cpp@sha256:559ac229adefe0f7e2d4e32f5222f26927b6bb8ba44b9db08e2544afebf41984
     command: ['-m', '/models/model.gguf', '--host', '0.0.0.0', '--port', '8080']
     volumes:
       - ./data/llm:/models

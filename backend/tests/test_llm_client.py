@@ -72,3 +72,56 @@ async def test_wrong_shape_retries_then_raises():
     async with httpx.AsyncClient() as client:
         with pytest.raises(EstimateError):
             await get_estimate("test", LLM_URL, "system prompt", client)
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_non_string_co2_retries_then_raises():
+    respx.post(LLM_URL).mock(
+        return_value=httpx.Response(200, json=_openai_response('{"calc": "x", "co2": 4.3}'))
+    )
+    async with httpx.AsyncClient() as client:
+        with pytest.raises(EstimateError):
+            await get_estimate("test", LLM_URL, "system prompt", client)
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_extra_fields_retries_then_raises():
+    respx.post(LLM_URL).mock(
+        return_value=httpx.Response(
+            200, json=_openai_response('{"calc": "x", "co2": "1kg", "z": 1}')
+        )
+    )
+    async with httpx.AsyncClient() as client:
+        with pytest.raises(EstimateError):
+            await get_estimate("test", LLM_URL, "system prompt", client)
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_non_dict_json_retries_then_raises():
+    respx.post(LLM_URL).mock(return_value=httpx.Response(200, json=_openai_response("[1, 2]")))
+    async with httpx.AsyncClient() as client:
+        with pytest.raises(EstimateError):
+            await get_estimate("test", LLM_URL, "system prompt", client)
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_empty_choices_retries_then_raises():
+    respx.post(LLM_URL).mock(return_value=httpx.Response(200, json={"choices": []}))
+    async with httpx.AsyncClient() as client:
+        with pytest.raises(EstimateError):
+            await get_estimate("test", LLM_URL, "system prompt", client)
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_null_content_retries_then_raises():
+    respx.post(LLM_URL).mock(
+        return_value=httpx.Response(200, json={"choices": [{"message": {"content": None}}]})
+    )
+    async with httpx.AsyncClient() as client:
+        with pytest.raises(EstimateError):
+            await get_estimate("test", LLM_URL, "system prompt", client)

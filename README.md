@@ -50,7 +50,7 @@ from upstream:
   serving a GGUF model file stored in ./data/llm. The model itself
   is downloaded by scripts/download-model.sh from a URL configured
   via MODEL_URL in .env, for example
-  https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF/blob/main/gemma-4-E4B-it-Q4_0.gguf
+  https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF/resolve/main/gemma-4-E4B-it-Q4_0.gguf
 
 The SYSTEM_PROMPT.md tells the model to return a JSON
 {"calc": "calculation", "co2": "x kg"}
@@ -74,3 +74,10 @@ Run, in three separate terminals: "devbox run llm", then
 Run "devbox run test" to run all backend and frontend tests.
 Run "devbox run install-hooks" once to set up the local
 prettier pre-commit check.
+
+Note: "devbox run front" serves the frontend as plain static
+files with no `/api` proxy, so it cannot complete a real
+estimate on its own, even with the other two running. To
+exercise the full flow locally, use `docker compose up --build`
+instead, which wires the three services together through nginx
+exactly as they run in production.
