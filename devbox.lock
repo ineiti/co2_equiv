@@ -1,0 +1,183 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "last_modified": "2026-09-29T03:29:29Z",
+      "resolved": "github:NixOS/nixpkgs/b6c8664de9b6cc07fe5666a29f91884ba81197c4?lastModified=1790652569&narHash=sha256-641r7xrlSOHYoktL9%2FaArPIYNgZJ9eM5URzSEOtPJDY%3D"
+    },
+    "llama-cpp@latest": {
+      "last_modified": "2026-10-02T22:55:44Z",
+      "resolved": "github:NixOS/nixpkgs/55ba7f49ef2962b42cbd126522b7df5f95037679#llama-cpp",
+      "source": "devbox-search",
+      "version": "0.5.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/yhsrar6w3hayx1hdrzcqkd6sazacp7jj-llama-cpp-0.5.0",
+              "default": true
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/1ywfrbn647dchkai1bfyv5qjjcxb3ayh-llama-cpp-0.5.0-dev"
+            }
+          ],
+          "store_path": "/nix/store/yhsrar6w3hayx1hdrzcqkd6sazacp7jj-llama-cpp-0.5.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/84mfywba9d72z2f9qm61xqg2nkk8j51a-llama-cpp-0.5.0",
+              "default": true
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/v61d9zqv3hqcsmrkmp4mb44z9zp0azsk-llama-cpp-0.5.0-dev"
+            }
+          ],
+          "store_path": "/nix/store/84mfywba9d72z2f9qm61xqg2nkk8j51a-llama-cpp-0.5.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/6491f2dv4wgrmra1f06pjibcixq8psym-llama-cpp-0.5.0",
+              "default": true
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/j4b9qa02waj1l67d4nd1nv247iqwxn3p-llama-cpp-0.5.0-dev"
+            }
+          ],
+          "store_path": "/nix/store/6491f2dv4wgrmra1f06pjibcixq8psym-llama-cpp-0.5.0"
+        }
+      }
+    },
+    "nodejs@latest": {
+      "last_modified": "2026-10-02T22:55:44Z",
+      "plugin_version": "0.0.5",
+      "resolved": "github:NixOS/nixpkgs/55ba7f49ef2962b42cbd126522b7df5f95037679#nodejs_26",
+      "source": "devbox-search",
+      "version": "26.10.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/vfqy70m0warvbvf3p5avkwk04l4ca5d6-nodejs-26.10.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/vfqy70m0warvbvf3p5avkwk04l4ca5d6-nodejs-26.10.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/h3k7l0n49l27nhzvfijlvxhhzzicjiqr-nodejs-26.10.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/h3k7l0n49l27nhzvfijlvxhhzzicjiqr-nodejs-26.10.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/gb4x0fqprmdzr981nm1fnqbc40lxdjzq-nodejs-26.10.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/gb4x0fqprmdzr981nm1fnqbc40lxdjzq-nodejs-26.10.0"
+        }
+      }
+    },
+    "prettier@latest": {
+      "last_modified": "2026-10-02T22:55:44Z",
+      "resolved": "github:NixOS/nixpkgs/55ba7f49ef2962b42cbd126522b7df5f95037679#prettier",
+      "source": "devbox-search",
+      "version": "3.9.6",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/qj1ry3wqg58ii430rm94g76xr4v9q9qf-prettier-3.9.6",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/qj1ry3wqg58ii430rm94g76xr4v9q9qf-prettier-3.9.6"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/z2yhxh3iivkb6nfiylm182yp3j3jcn1p-prettier-3.9.6",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/z2yhxh3iivkb6nfiylm182yp3j3jcn1p-prettier-3.9.6"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/90m2czyb98c3kwcaplbs9xghf0zqh75z-prettier-3.9.6",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/90m2czyb98c3kwcaplbs9xghf0zqh75z-prettier-3.9.6"
+        }
+      }
+    },
+    "python@3.13": {
+      "last_modified": "2026-10-02T22:55:44Z",
+      "plugin_version": "0.0.5",
+      "resolved": "github:NixOS/nixpkgs/55ba7f49ef2962b42cbd126522b7df5f95037679#python313",
+      "source": "devbox-search",
+      "version": "3.13.15",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/ydlh8id2c98nnlhiy87hwhalg501p1j5-python3-3.13.15",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/ydlh8id2c98nnlhiy87hwhalg501p1j5-python3-3.13.15"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/v3n38bhgkjylj7wxk2shklk6yavasxnh-python3-3.13.15",
+              "default": true
+            },
+            {
+              "name": "debug",
+              "path": "/nix/store/cd7vbs9y5f0x2mglwja1754sgvnvrdvh-python3-3.13.15-debug"
+            }
+          ],
+          "store_path": "/nix/store/v3n38bhgkjylj7wxk2shklk6yavasxnh-python3-3.13.15"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/3gzjs8czrk47y7cpmr44jc568vqpb2p5-python3-3.13.15",
+              "default": true
+            },
+            {
+              "name": "debug",
+              "path": "/nix/store/r61fvgv4bavfaqiha0p6869jv4c0h488-python3-3.13.15-debug"
+            }
+          ],
+          "store_path": "/nix/store/3gzjs8czrk47y7cpmr44jc568vqpb2p5-python3-3.13.15"
+        }
+      }
+    }
+  }
+}

@@ -16,7 +16,7 @@ not precision. Works on mobile.
 Contrary to the original README wording ("two containers"), the actual
 design needs **three** docker-compose services, because the LLM runtime
 is best sourced as the official pre-built llama.cpp image rather than
-reimplemented. Only two images are *built* by our CI/CD; the third is
+reimplemented. Only two images are _built_ by our CI/CD; the third is
 pulled as-is. The README will be corrected to say this explicitly.
 
 ```
@@ -116,8 +116,8 @@ pytest + FastAPI `TestClient`, with the `llm` HTTP call mocked
     - plane: 0.15 kg/km
     - car: 0.17 kg/km
     - train: 0.035 kg/km
-    (Matches SYSTEM_PROMPT.md's own reference values for consistency.)
-    Negative kgCo2 → negative distances (shown as "saved" distances).
+      (Matches SYSTEM_PROMPT.md's own reference values for consistency.)
+      Negative kgCo2 → negative distances (shown as "saved" distances).
   - UI glue: on submit, show loading animation (plane/train/car), call
     `submitEstimate`, on success render `calc` text + three distance
     rows with simple CSS animation (e.g. icon sliding proportionally to
@@ -147,6 +147,7 @@ follow-up in AGENTS.md, not required now).
 ## 6. Model download script
 
 `scripts/download-model.sh`:
+
 - Reads `MODEL_URL` from `.env` (source `.env` or use `dotenv`-style
   loading; keep it POSIX-shell simple).
 - Target path: `./data/llm/model.gguf`.
@@ -165,6 +166,7 @@ follow-up in AGENTS.md, not required now).
 and serving frontend locally), `prettier`.
 
 Scripts (`devbox run <name>`):
+
 - `llm` — `scripts/download-model.sh && llama-server -m ./data/llm/model.gguf --port 8080`
 - `backend` — installs backend deps if needed, runs
   `uvicorn app:app --reload --port 8000` with `LLM_URL=http://localhost:8080`

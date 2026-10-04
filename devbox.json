@@ -1,0 +1,14 @@
+{
+  "packages": ["llama-cpp@latest", "python@3.13", "nodejs@latest", "prettier@latest"],
+  "shell": {
+    "scripts": {
+      "llm": "echo 'implemented in Task 2'",
+      "backend": "echo 'implemented in Task 4'",
+      "front": "echo 'implemented in Task 9'",
+      "test": "echo 'implemented in Task 5'",
+      "fmt": "prettier --write .",
+      "fmt:check": "prettier --check .",
+      "install-hooks": "echo 'implemented in Task 8'"
+    }
+  }
+}

@@ -129,6 +129,7 @@ which is not unit-tested per the spec.
 ### Task 1: Project scaffolding — devbox, env, formatting config
 
 **Files:**
+
 - Create: `devbox.json`
 - Create: `.env.example`
 - Create: `.gitignore`
@@ -136,6 +137,7 @@ which is not unit-tested per the spec.
 - Create: `.prettierignore`
 
 **Interfaces:**
+
 - Produces: `devbox.json` with packages `llama-cpp`, `python@3.13`,
   `nodejs@20`, `prettier`, and placeholder scripts `llm`, `backend`,
   `front`, `test`, `fmt`, `fmt:check`, `install-hooks` (bodies filled
@@ -169,6 +171,7 @@ fmt:check` successfully in Step 3.
 - [ ] **Step 2: Create `.env.example`, `.gitignore`, prettier config**
 
 `.env.example`:
+
 ```
 MODEL_URL=https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF/resolve/main/gemma-4-E4B-it-Q4_0.gguf
 LLM_PORT=8080
@@ -177,6 +180,7 @@ FRONTEND_PORT=8081
 ```
 
 `.gitignore`:
+
 ```
 data/
 .env
@@ -188,6 +192,7 @@ __pycache__/
 ```
 
 `.prettierrc.json`:
+
 ```json
 {
   "singleQuote": true,
@@ -197,6 +202,7 @@ __pycache__/
 ```
 
 `.prettierignore`:
+
 ```
 data/
 node_modules/
@@ -223,12 +229,14 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 ### Task 2: Model download script
 
 **Files:**
+
 - Create: `scripts/download-model.sh`
 - Test: manual (shell script; verified by running it twice, see
   Step 2below — shell scripts in this plan are tested by direct
   execution rather than a unit-test framework)
 
 **Interfaces:**
+
 - Produces: `scripts/download-model.sh` — reads `MODEL_URL` from
   `.env` (falling back to `.env.example` if `.env` doesn't exist,
   so CI/fresh clones can still smoke-test it), downloads to
@@ -276,13 +284,16 @@ echo "Done."
 - [ ] **Step 2: Make executable and verify idempotency logic without a real download**
 
 Run:
+
 ```bash
 chmod +x scripts/download-model.sh
 mkdir -p data/llm && touch data/llm/model.gguf
 ./scripts/download-model.sh
 ```
+
 Expected output: `Model already present at ./data/llm/model.gguf, skipping download.`
 Then clean up the fake file so a real download can happen later:
+
 ```bash
 rm data/llm/model.gguf
 ```
@@ -290,6 +301,7 @@ rm data/llm/model.gguf
 - [ ] **Step 3: Wire into devbox `llm` script (placeholder call only; full llm script completed in Task 9's sibling or now)**
 
 Edit `devbox.json`, replace the `llm` script stub:
+
 ```json
 "llm": "./scripts/download-model.sh && llama-server -m ./data/llm/model.gguf --port ${LLM_PORT:-8080}"
 ```
@@ -313,6 +325,7 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 ### Task 3: Shared pure-logic modules — system prompt loader (backend) + co2 math (frontend)
 
 **Files:**
+
 - Create: `backend/pyproject.toml`
 - Create: `backend/app/__init__.py`
 - Create: `backend/app/system_prompt.py`
@@ -322,11 +335,12 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 - Test: `frontend/co2.test.js`
 
 **Interfaces:**
+
 - Produces (backend): `load_system_prompt(path: str | None = None) -> str`
   in `backend/app/system_prompt.py` — reads the file at `path` (default:
   repo-root `SYSTEM_PROMPT.md`, resolved relative to this file's
   location, i.e. `Path(__file__).resolve().parent.parent.parent /
-  "SYSTEM_PROMPT.md"`), returns its full text stripped of trailing
+"SYSTEM_PROMPT.md"`), returns its full text stripped of trailing
   whitespace. Raises `FileNotFoundError` if missing.
 - Produces (frontend): `parseCo2(co2String: string): number | null` and
   `toDistances(kgCo2: number): {plane: number, car: number, train: number}`
@@ -336,6 +350,7 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 - [ ] **Step 1: Write failing backend test**
 
 `backend/tests/test_system_prompt.py`:
+
 ```python
 from pathlib import Path
 
@@ -365,6 +380,7 @@ def test_loads_explicit_path(tmp_path):
 - [ ] **Step 2: Create `backend/pyproject.toml` and package init so pytest can import `app`**
 
 `backend/pyproject.toml`:
+
 ```toml
 [project]
 name = "co2-equiv-backend"
@@ -393,6 +409,7 @@ Expected: FAIL with `ModuleNotFoundError: No module named 'app.system_prompt'`
 - [ ] **Step 4: Implement `load_system_prompt`**
 
 `backend/app/system_prompt.py`:
+
 ```python
 from pathlib import Path
 
@@ -412,46 +429,47 @@ Expected: PASS (3 tests)
 - [ ] **Step 6: Write failing frontend test**
 
 `frontend/co2.test.js`:
+
 ```javascript
-import { describe, it, expect } from "vitest";
-import { parseCo2, toDistances } from "./co2.js";
+import { describe, it, expect } from 'vitest';
+import { parseCo2, toDistances } from './co2.js';
 
-describe("parseCo2", () => {
-  it("parses a positive kg value", () => {
-    expect(parseCo2("4.3kg")).toBe(4.3);
+describe('parseCo2', () => {
+  it('parses a positive kg value', () => {
+    expect(parseCo2('4.3kg')).toBe(4.3);
   });
 
-  it("parses a negative kg value", () => {
-    expect(parseCo2("-6.8kg")).toBe(-6.8);
+  it('parses a negative kg value', () => {
+    expect(parseCo2('-6.8kg')).toBe(-6.8);
   });
 
-  it("returns null for unknown", () => {
-    expect(parseCo2("unknown")).toBeNull();
+  it('returns null for unknown', () => {
+    expect(parseCo2('unknown')).toBeNull();
   });
 
-  it("returns null for unparseable strings", () => {
-    expect(parseCo2("abc")).toBeNull();
-    expect(parseCo2("")).toBeNull();
+  it('returns null for unparseable strings', () => {
+    expect(parseCo2('abc')).toBeNull();
+    expect(parseCo2('')).toBeNull();
     expect(parseCo2(undefined)).toBeNull();
   });
 });
 
-describe("toDistances", () => {
-  it("computes plane/car/train distances from a positive kg value", () => {
+describe('toDistances', () => {
+  it('computes plane/car/train distances from a positive kg value', () => {
     const d = toDistances(4.3);
     expect(d.plane).toBeCloseTo(4.3 / 0.15, 5);
     expect(d.car).toBeCloseTo(4.3 / 0.17, 5);
     expect(d.train).toBeCloseTo(4.3 / 0.035, 5);
   });
 
-  it("computes negative distances for negative kg (savings)", () => {
+  it('computes negative distances for negative kg (savings)', () => {
     const d = toDistances(-6.8);
     expect(d.plane).toBeLessThan(0);
     expect(d.car).toBeLessThan(0);
     expect(d.train).toBeLessThan(0);
   });
 
-  it("returns zero distances for zero kg", () => {
+  it('returns zero distances for zero kg', () => {
     const d = toDistances(0);
     expect(d.plane).toBe(0);
     expect(d.car).toBe(0);
@@ -491,7 +509,7 @@ const FACTORS = {
 };
 
 export function parseCo2(co2String) {
-  if (typeof co2String !== "string") return null;
+  if (typeof co2String !== 'string') return null;
   const match = co2String.match(/^(-?\d+(\.\d+)?)kg$/);
   if (!match) return null;
   return parseFloat(match[1]);
@@ -525,10 +543,12 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 ### Task 4: Backend LLM client with retry
 
 **Files:**
+
 - Create: `backend/app/llm_client.py`
 - Test: `backend/tests/test_llm_client.py`
 
 **Interfaces:**
+
 - Consumes: nothing from earlier tasks directly (independent HTTP
   client), but conceptually sits between `system_prompt.py`'s output
   and `main.py`'s route (Task 5).
@@ -542,6 +562,7 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 - [ ] **Step 1: Write failing tests**
 
 `backend/tests/test_llm_client.py`:
+
 ```python
 import httpx
 import pytest
@@ -626,9 +647,11 @@ async def test_wrong_shape_retries_then_raises():
 - [ ] **Step 2: Add test deps and run to verify failure**
 
 Edit `backend/pyproject.toml` dev deps to add `pytest-asyncio>=0.24`:
+
 ```toml
 dev = ["pytest>=8", "pytest-asyncio>=0.24", "respx>=0.21"]
 ```
+
 Add to `[tool.pytest.ini_options]`: `asyncio_mode = "auto"`
 
 Run: `cd backend && .venv/bin/pip install -e ".[dev]" && .venv/bin/pytest tests/test_llm_client.py -v`
@@ -706,14 +729,16 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 ### Task 5: Backend FastAPI route
 
 **Files:**
+
 - Create: `backend/app/main.py`
 - Test: `backend/tests/test_main.py`
 - Modify: `devbox.json` (`backend` and `test` script stubs)
 
 **Interfaces:**
+
 - Consumes: `load_system_prompt()` from Task 3
   (`backend/app/system_prompt.py`); `get_estimate(text, llm_url,
-  system_prompt, client)` and `EstimateError` from Task 4
+system_prompt, client)` and `EstimateError` from Task 4
   (`backend/app/llm_client.py`).
 - Produces: FastAPI app object `app` in `backend/app/main.py`, route
   `POST /api/estimate`, request model `{"text": str}`, consumed by
@@ -722,6 +747,7 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 - [ ] **Step 1: Write failing tests**
 
 `backend/tests/test_main.py`:
+
 ```python
 from unittest.mock import AsyncMock, patch
 
@@ -817,6 +843,7 @@ test_llm_client.py, test_main.py — 14 tests total)
 - [ ] **Step 5: Wire devbox `backend` and `test` scripts**
 
 Edit `devbox.json`:
+
 ```json
 "backend": "cd backend && pip install -e '.[dev]' --quiet && LLM_URL=http://localhost:${LLM_PORT:-8080}/v1/chat/completions uvicorn app.main:app --reload --port ${BACKEND_PORT:-8000}",
 "test": "cd backend && pip install -e '.[dev]' --quiet && pytest -v && cd ../frontend && npm install --silent && npm test"
@@ -842,9 +869,11 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 ### Task 6: Backend Dockerfile
 
 **Files:**
+
 - Create: `backend/Dockerfile`
 
 **Interfaces:**
+
 - Consumes: `backend/pyproject.toml`, `backend/app/`,
   `SYSTEM_PROMPT.md` (repo root, copied in).
 - Produces: a runnable image exposing port 8000, consumed by Task 10's
@@ -882,12 +911,14 @@ Expected: build succeeds (build context is repo root so
 - [ ] **Step 3: Verify the container starts and responds**
 
 Run:
+
 ```bash
 docker run --rm -d --name co2-test-backend -p 8000:8000 -e LLM_URL=http://invalid-host:8080/v1/chat/completions co2-equiv-backend:test
 sleep 2
 curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:8000/api/estimate -H "Content-Type: application/json" -d '{"text":"test"}'
 docker stop co2-test-backend
 ```
+
 Expected: HTTP code `502` printed (LLM host is unreachable by design in
 this smoke test, confirming the route is live and the error path
 works end-to-end in a real container).
@@ -906,10 +937,12 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 ### Task 7: Frontend nginx config and Dockerfile
 
 **Files:**
+
 - Create: `frontend/nginx.conf`
 - Create: `frontend/Dockerfile`
 
 **Interfaces:**
+
 - Consumes: static files `frontend/index.html`, `frontend/index.css`,
   `frontend/index.js`, `frontend/co2.js` (index.html/css created in
   Task 9; this task can reference them even though Task 9 runs later,
@@ -956,6 +989,7 @@ EXPOSE 80
 - [ ] **Step 3: Create a temporary minimal `index.html`/`index.css`/`index.js` so the build succeeds now (replaced by Task 9)**
 
 `frontend/index.html`:
+
 ```html
 <!doctype html>
 <html lang="en">
@@ -968,6 +1002,7 @@ EXPOSE 80
   </body>
 </html>
 ```
+
 `frontend/index.css`: empty file with a single comment
 `/* placeholder — replaced in Task 9 */`.
 `frontend/index.js`: empty file with a single comment
@@ -979,12 +1014,14 @@ Run: `docker build -f frontend/Dockerfile -t co2-equiv-frontend:test .`
 Expected: build succeeds.
 
 Run:
+
 ```bash
 docker run --rm -d --name co2-test-frontend -p 8081:80 co2-equiv-frontend:test
 sleep 1
 curl -s http://localhost:8081/ | grep -q "Placeholder" && echo "OK: static file served"
 docker stop co2-test-frontend
 ```
+
 Expected: `OK: static file served` printed. (The `/api/` proxy target
 `backend` won't resolve outside docker-compose's network, so proxy
 behavior is verified later in Task 10, not here.)
@@ -1003,11 +1040,13 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 ### Task 8: Prettier CI workflow and local pre-commit hook
 
 **Files:**
+
 - Create: `.github/workflows/prettier.yml`
 - Create: `scripts/install-hooks.sh`
 - Modify: `devbox.json` (`install-hooks` script stub)
 
 **Interfaces:**
+
 - Produces: a git pre-commit hook installed at `.git/hooks/pre-commit`
   (not tracked in git itself — the installer script is tracked) that
   runs `prettier --check` on staged files.
@@ -1028,7 +1067,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
       - run: npx prettier@3 --check .
 ```
 
@@ -1058,6 +1097,7 @@ echo "Installed pre-commit hook at .git/hooks/pre-commit"
 - [ ] **Step 3: Wire devbox script**
 
 Edit `devbox.json`:
+
 ```json
 "install-hooks": "./scripts/install-hooks.sh"
 ```
@@ -1065,11 +1105,13 @@ Edit `devbox.json`:
 - [ ] **Step 4: Make executable and verify**
 
 Run:
+
 ```bash
 chmod +x scripts/install-hooks.sh
 devbox run install-hooks
 ls -l .git/hooks/pre-commit
 ```
+
 Expected: file exists with executable permission bits, printed message
 confirms installation.
 
@@ -1096,12 +1138,14 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 ### Task 9: Frontend UI — HTML, CSS, JS glue, animation
 
 **Files:**
+
 - Modify: `frontend/index.html` (replace Task 7 placeholder)
 - Modify: `frontend/index.css` (replace Task 7 placeholder)
 - Modify: `frontend/index.js` (replace Task 7 placeholder)
 - Modify: `devbox.json` (`front` script stub)
 
 **Interfaces:**
+
 - Consumes: `parseCo2`, `toDistances` from `frontend/co2.js` (Task 3).
 - Produces: the full user-facing page. No further tasks consume this
   task's internals (it's the top of the frontend stack), so this task
@@ -1124,16 +1168,11 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
     <main>
       <h1>CO2 Equivalent Calculator</h1>
       <p class="hint">
-        Describe an activity or item, e.g. "eating 150g of beef" or "forgot
-        to turn off the office light for 2h".
+        Describe an activity or item, e.g. "eating 150g of beef" or "forgot to turn off the office
+        light for 2h".
       </p>
       <form id="estimate-form">
-        <input
-          id="text-input"
-          type="text"
-          placeholder="What did you do?"
-          autocomplete="off"
-        />
+        <input id="text-input" type="text" placeholder="What did you do?" autocomplete="off" />
         <button type="submit" id="estimate-button">ESTIMATE</button>
       </form>
       <p id="input-error" class="error" hidden>Please type something first.</p>
@@ -1255,27 +1294,32 @@ main {
 - [ ] **Step 3: Write `frontend/index.js`**
 
 ```javascript
-import { parseCo2, toDistances } from "./co2.js";
+import { parseCo2, toDistances } from './co2.js';
 
-const form = document.getElementById("estimate-form");
-const input = document.getElementById("text-input");
-const inputError = document.getElementById("input-error");
-const loading = document.getElementById("loading");
-const result = document.getElementById("result");
-const fetchError = document.getElementById("fetch-error");
-const calcText = document.getElementById("calc-text");
-const co2Text = document.getElementById("co2-text");
-const planeDistance = document.getElementById("plane-distance");
-const carDistance = document.getElementById("car-distance");
-const trainDistance = document.getElementById("train-distance");
+const form = document.getElementById('estimate-form');
+const input = document.getElementById('text-input');
+const inputError = document.getElementById('input-error');
+const loading = document.getElementById('loading');
+const result = document.getElementById('result');
+const fetchError = document.getElementById('fetch-error');
+const calcText = document.getElementById('calc-text');
+const co2Text = document.getElementById('co2-text');
+const planeDistance = document.getElementById('plane-distance');
+const carDistance = document.getElementById('car-distance');
+const trainDistance = document.getElementById('train-distance');
 
 function formatDistance(km) {
   const rounded = Math.round(Math.abs(km));
-  const sign = km < 0 ? "saved " : "";
+  const sign = km < 0 ? 'saved ' : '';
   return `${sign}${rounded} km`;
 }
 
-function showState({ showLoading = false, showResult = false, showInputError = false, showFetchError = false }) {
+function showState({
+  showLoading = false,
+  showResult = false,
+  showInputError = false,
+  showFetchError = false,
+}) {
   loading.hidden = !showLoading;
   result.hidden = !showResult;
   inputError.hidden = !showInputError;
@@ -1283,9 +1327,9 @@ function showState({ showLoading = false, showResult = false, showInputError = f
 }
 
 async function submitEstimate(text) {
-  const response = await fetch("/api/estimate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  const response = await fetch('/api/estimate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text }),
   });
   if (!response.ok) {
@@ -1294,7 +1338,7 @@ async function submitEstimate(text) {
   return response.json();
 }
 
-form.addEventListener("submit", async (event) => {
+form.addEventListener('submit', async (event) => {
   event.preventDefault();
   const text = input.value.trim();
 
@@ -1310,17 +1354,17 @@ form.addEventListener("submit", async (event) => {
     const kg = parseCo2(data.co2);
 
     if (kg === null) {
-      calcText.textContent = "";
+      calcText.textContent = '';
       co2Text.textContent = "Couldn't estimate that — try describing it differently.";
-      planeDistance.textContent = "";
-      carDistance.textContent = "";
-      trainDistance.textContent = "";
+      planeDistance.textContent = '';
+      carDistance.textContent = '';
+      trainDistance.textContent = '';
       showState({ showResult: true });
       return;
     }
 
     const distances = toDistances(kg);
-    calcText.textContent = data.calc ?? "";
+    calcText.textContent = data.calc ?? '';
     co2Text.textContent = `${kg}kg CO2e`;
     planeDistance.textContent = formatDistance(distances.plane);
     carDistance.textContent = formatDistance(distances.car);
@@ -1335,6 +1379,7 @@ form.addEventListener("submit", async (event) => {
 - [ ] **Step 4: Wire devbox `front` script**
 
 Edit `devbox.json`:
+
 ```json
 "front": "cd frontend && python3 -m http.server ${FRONTEND_PORT:-8081}"
 ```
@@ -1380,10 +1425,12 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 ### Task 10: docker-compose wiring and Docker build CI workflow
 
 **Files:**
+
 - Create: `docker-compose.yaml`
 - Create: `.github/workflows/docker-build.yml`
 
 **Interfaces:**
+
 - Consumes: `backend/Dockerfile` (Task 6), `frontend/Dockerfile`
   (Task 7), `.env.example` keys (Task 1).
 - Produces: the full running stack, verified end-to-end manually.
@@ -1394,11 +1441,11 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 services:
   llm:
     image: ghcr.io/ggml-org/llama.cpp:server
-    command: ["-m", "/models/model.gguf", "--host", "0.0.0.0", "--port", "8080"]
+    command: ['-m', '/models/model.gguf', '--host', '0.0.0.0', '--port', '8080']
     volumes:
       - ./data/llm:/models
     expose:
-      - "8080"
+      - '8080'
 
   backend:
     build:
@@ -1409,14 +1456,14 @@ services:
     depends_on:
       - llm
     expose:
-      - "8000"
+      - '8000'
 
   frontend:
     build:
       context: .
       dockerfile: frontend/Dockerfile
     ports:
-      - "${FRONTEND_PORT:-8081}:80"
+      - '${FRONTEND_PORT:-8081}:80'
     depends_on:
       - backend
 ```
@@ -1424,6 +1471,7 @@ services:
 - [ ] **Step 2: Download a real model and bring up the stack**
 
 Run:
+
 ```bash
 cp .env.example .env
 ./scripts/download-model.sh
@@ -1431,6 +1479,7 @@ docker compose up --build -d
 sleep 5
 docker compose ps
 ```
+
 Expected: all three services show as running/healthy.
 
 - [ ] **Step 3: End-to-end manual verification**
@@ -1502,10 +1551,12 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 ### Task 11: README corrections and final docs pass
 
 **Files:**
+
 - Modify: `README.md`
 - Create: `AGENTS.md`
 
 **Interfaces:**
+
 - None — terminal documentation task.
 
 - [ ] **Step 1: Update `README.md`'s "Setup" section**
@@ -1521,18 +1572,18 @@ repo's CI/CD and pushed to ghcr.io; the third is pulled as-is
 from upstream:
 
 - frontend - holds the html, the CSS and a short javascript
-which takes the html input, and sends it to the backend,
-then interprets the returned value and updates the
-distances shown
+  which takes the html input, and sends it to the backend,
+  then interprets the returned value and updates the
+  distances shown
 - backend - a small FastAPI service which injects SYSTEM_PROMPT.md
-as the system prompt, calls the llm container's OpenAI-compatible
-API, validates the JSON shape it gets back, and returns it to
-the frontend
+  as the system prompt, calls the llm container's OpenAI-compatible
+  API, validates the JSON shape it gets back, and returns it to
+  the frontend
 - llm - the official ghcr.io/ggml-org/llama.cpp:server image,
-serving a GGUF model file stored in ./data/llm. The model itself
-is downloaded by scripts/download-model.sh from a URL configured
-via MODEL_URL in .env, for example
-https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF/blob/main/gemma-4-E4B-it-Q4_0.gguf
+  serving a GGUF model file stored in ./data/llm. The model itself
+  is downloaded by scripts/download-model.sh from a URL configured
+  via MODEL_URL in .env, for example
+  https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF/blob/main/gemma-4-E4B-it-Q4_0.gguf
 
 The SYSTEM_PROMPT.md tells the model to return a JSON
 {"calc": "calculation", "co2": "x kg"}

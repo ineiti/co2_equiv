@@ -37,17 +37,17 @@ This tool uses two docker containers, configured in
 a docker-compose.yaml:
 
 - frontend - holds the html, the CSS and a short javascript
-which takes the html input, and sends it to the backend,
-then interprets the returned value and updates the
-distances shown
+  which takes the html input, and sends it to the backend,
+  then interprets the returned value and updates the
+  distances shown
 - backend - an LLM, which is stored in ./data/llm,
-and can be configured with an environment variable in .env,
-pointing for example to 
-https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF/blob/main/gemma-4-E4B-it-Q4_0.gguf
-and which takes the question, and returns the JSON
-produced by the LLM.
-The SYSTEM_PROMPT.md tells the model to return a JSON
-{"calc": "calculation", "co2": "x kg"}
+  and can be configured with an environment variable in .env,
+  pointing for example to
+  https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF/blob/main/gemma-4-E4B-it-Q4_0.gguf
+  and which takes the question, and returns the JSON
+  produced by the LLM.
+  The SYSTEM_PROMPT.md tells the model to return a JSON
+  {"calc": "calculation", "co2": "x kg"}
 
 # CI/CD
 
