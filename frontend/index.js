@@ -1,4 +1,14 @@
-import { parseCo2, toDistances } from './co2.js';
+import {
+  parseCo2,
+  toDistances,
+  formatHistoryTimestamp,
+  buildShareUrl,
+  buildShareText,
+  normalizeMastodonInstance,
+} from './co2.js';
+
+const MAX_HISTORY_ENTRIES = 20;
+const MASTODON_INSTANCE_KEY = 'mastodonInstance';
 
 const form = document.getElementById('estimate-form');
 const input = document.getElementById('text-input');
@@ -11,6 +21,44 @@ const co2Text = document.getElementById('co2-text');
 const planeDistance = document.getElementById('plane-distance');
 const carDistance = document.getElementById('car-distance');
 const trainDistance = document.getElementById('train-distance');
+const historySection = document.getElementById('history');
+const historyList = document.getElementById('history-list');
+const shareButtons = document.getElementById('share-buttons');
+const shareMastodon = document.getElementById('share-mastodon');
+const shareThreads = document.getElementById('share-threads');
+const shareLinkedin = document.getElementById('share-linkedin');
+
+let historyEntries = [];
+let currentShare = null;
+
+function renderHistory() {
+  historySection.hidden = historyEntries.length === 0;
+  historyList.innerHTML = '';
+  for (const entry of historyEntries) {
+    const item = document.createElement('li');
+    const time = formatHistoryTimestamp(entry.timestamp);
+    item.textContent = `${entry.text} — ${entry.co2}${time ? ` (${time})` : ''}`;
+    historyList.appendChild(item);
+  }
+}
+
+async function loadHistory() {
+  try {
+    const response = await fetch('/api/history');
+    if (!response.ok) return;
+    historyEntries = await response.json();
+    renderHistory();
+  } catch {
+    // history is a non-essential enhancement; ignore failures
+  }
+}
+
+function addToHistory(entry) {
+  historyEntries = [entry, ...historyEntries].slice(0, MAX_HISTORY_ENTRIES);
+  renderHistory();
+}
+
+loadHistory();
 
 function formatDistance(km) {
   const rounded = Math.round(Math.abs(km));
@@ -30,11 +78,11 @@ function showState({
   fetchError.hidden = !showFetchError;
 }
 
-async function submitEstimate(text) {
+async function submitEstimate(text, save) {
   const response = await fetch('/api/estimate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text }),
+    body: JSON.stringify({ text, save }),
   });
   if (!response.ok) {
     throw new Error(`request failed: ${response.status}`);
@@ -42,19 +90,11 @@ async function submitEstimate(text) {
   return response.json();
 }
 
-form.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  const text = input.value.trim();
-
-  if (!text) {
-    showState({ showInputError: true });
-    return;
-  }
-
+async function runEstimate(text, { save }) {
   showState({ showLoading: true });
 
   try {
-    const data = await submitEstimate(text);
+    const data = await submitEstimate(text, save);
     const kg = parseCo2(data.co2);
 
     if (kg === null) {
@@ -63,6 +103,8 @@ form.addEventListener('submit', async (event) => {
       planeDistance.textContent = '';
       carDistance.textContent = '';
       trainDistance.textContent = '';
+      currentShare = null;
+      shareButtons.hidden = true;
       showState({ showResult: true });
       return;
     }
@@ -73,8 +115,73 @@ form.addEventListener('submit', async (event) => {
     planeDistance.textContent = formatDistance(distances.plane);
     carDistance.textContent = formatDistance(distances.car);
     trainDistance.textContent = formatDistance(distances.train);
+    currentShare = { text, co2: data.co2 };
+    shareButtons.hidden = false;
     showState({ showResult: true });
+    if (save) {
+      addToHistory({ text, calc: data.calc, co2: data.co2, timestamp: new Date().toISOString() });
+    }
   } catch (err) {
     showState({ showFetchError: true });
   }
+}
+
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const text = input.value.trim();
+
+  if (!text) {
+    showState({ showInputError: true });
+    return;
+  }
+
+  runEstimate(text, { save: true });
 });
+
+function getShareLink() {
+  const shareUrl = buildShareUrl(location.origin, currentShare.text);
+  return buildShareText(currentShare.text, currentShare.co2, shareUrl);
+}
+
+shareMastodon.addEventListener('click', (event) => {
+  if (!currentShare) return;
+  const stored = localStorage.getItem(MASTODON_INSTANCE_KEY);
+  let instance = normalizeMastodonInstance(stored);
+  // Shift-click re-prompts, so a wrong/stale instance isn't stuck forever.
+  if (!instance || event.shiftKey) {
+    const typed = prompt('Your Mastodon instance (e.g. mastodon.social):', stored ?? '');
+    instance = normalizeMastodonInstance(typed);
+    if (!instance) {
+      localStorage.removeItem(MASTODON_INSTANCE_KEY);
+      return;
+    }
+    localStorage.setItem(MASTODON_INSTANCE_KEY, instance);
+  }
+  const url = `https://${instance}/share?text=${encodeURIComponent(getShareLink())}`;
+  window.open(url, '_blank', 'noopener');
+});
+
+shareThreads.addEventListener('click', () => {
+  if (!currentShare) return;
+  const url = `https://www.threads.com/intent/post?text=${encodeURIComponent(getShareLink())}`;
+  window.open(url, '_blank', 'noopener');
+});
+
+shareLinkedin.addEventListener('click', () => {
+  if (!currentShare) return;
+  const shareUrl = buildShareUrl(location.origin, currentShare.text);
+  const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+  window.open(url, '_blank', 'noopener');
+});
+
+function runFromQueryParam() {
+  const params = new URLSearchParams(location.search);
+  const text = params.get('text')?.trim();
+  if (!text) return;
+
+  history.replaceState(null, '', location.pathname);
+  input.value = text;
+  runEstimate(text, { save: false });
+}
+
+runFromQueryParam();

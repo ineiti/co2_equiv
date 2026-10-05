@@ -18,3 +18,27 @@ export function toDistances(kgCo2) {
     train: kgCo2 / FACTORS.train,
   };
 }
+
+export function formatHistoryTimestamp(isoString) {
+  const date = new Date(isoString);
+  if (isNaN(date.getTime())) return '';
+  return date.toLocaleString();
+}
+
+export function buildShareUrl(origin, text) {
+  return `${origin}/?text=${encodeURIComponent(text)}`;
+}
+
+export function buildShareText(text, co2, shareUrl) {
+  return `${text} → ${co2} CO2e\n${shareUrl}`;
+}
+
+export function normalizeMastodonInstance(input) {
+  if (typeof input !== 'string') return '';
+  let instance = input.trim();
+  instance = instance.replace(/^https?:\/\//i, '');
+  instance = instance.replace(/^@[^@/]+@/, '');
+  instance = instance.replace(/\/.*$/, '');
+  if (!instance.includes('.')) return '';
+  return instance;
+}

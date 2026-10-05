@@ -14,6 +14,9 @@ services:
       dockerfile: backend/Dockerfile
     environment:
       - LLM_URL=http://llm:8080/v1/chat/completions
+      - HISTORY_PATH=/data/fastapi/history.json
+    volumes:
+      - ./data/fastapi:/data/fastapi
     depends_on:
       - llm
     expose:

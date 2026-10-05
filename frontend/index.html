@@ -39,10 +39,19 @@
           <span class="icon">🚆</span>
           <span id="train-distance"></span>
         </div>
+        <div id="share-buttons" hidden>
+          <button type="button" id="share-mastodon">Share on Mastodon</button>
+          <button type="button" id="share-threads">Share on Threads</button>
+          <button type="button" id="share-linkedin">Share on LinkedIn</button>
+        </div>
       </div>
       <p id="fetch-error" class="error" hidden>
         Could not get an estimate right now. Please try again.
       </p>
+      <section id="history" hidden>
+        <h2>Recent estimates</h2>
+        <ul id="history-list"></ul>
+      </section>
     </main>
     <script type="module" src="index.js"></script>
   </body>

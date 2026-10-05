@@ -24,6 +24,23 @@ with the estimated distance they could travel.
 
 It also works nicely on a mobile device.
 
+Below the result, the page shows the last 20 estimates (text,
+CO2 result, and timestamp), newest first. This list is loaded
+once on page load from the backend's history, and updated
+locally as new estimates come in.
+
+Each result also shows Share buttons for Mastodon, Threads, and
+LinkedIn. The share link is the app's own URL with the original
+text in a `?text=` query parameter, so opening it re-runs the
+same estimate. For Mastodon and Threads, the pre-filled post
+also includes the original text and CO2 result; LinkedIn's share
+intent only accepts a URL, so it shows just the link.
+Opening a shared link does not get added to the backend's
+history — only estimates a visitor types and submits themselves
+are recorded. The Mastodon button asks once for your instance
+domain (e.g. mastodon.social) and remembers it in the browser's
+local storage for next time; shift-click the button to change it.
+
 While the LLM calculates the output, there is a small
 animation of the plane, train, and car.
 From the returned JSON, the UI shows the "calc"
@@ -45,7 +62,10 @@ from upstream:
 - backend - a small FastAPI service which injects SYSTEM_PROMPT.md
   as the system prompt, calls the llm container's OpenAI-compatible
   API, validates the JSON shape it gets back, and returns it to
-  the frontend
+  the frontend. Every successful estimate is appended to a history
+  file (JSON array, newest first, capped at the last 20 entries),
+  stored at HISTORY_PATH (default /data/fastapi/history.json,
+  mounted from ./data/fastapi). GET /api/history returns that list.
 - llm - the official ghcr.io/ggml-org/llama.cpp:server image,
   serving a GGUF model file stored in ./data/llm. The model itself
   is downloaded by scripts/download-model.sh from a URL configured
