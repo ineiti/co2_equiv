@@ -1,3 +1,6 @@
+networks:
+  internal:
+
 services:
   llm:
     # ghcr.io/ggml-org/llama.cpp:server, pinned by digest for reproducible builds.
@@ -5,6 +8,8 @@ services:
     command: ['-m', '/models/model.gguf', '--host', '0.0.0.0', '--port', '8080']
     volumes:
       - ./data/llm:/models
+    networks:
+      - internal
     expose:
       - '8080'
 
@@ -17,6 +22,8 @@ services:
       - ./data/fastapi:/data/fastapi
     depends_on:
       - llm
+    networks:
+      - internal
     expose:
       - '8000'
     labels:
@@ -28,6 +35,8 @@ services:
       - '${FRONTEND_PORT:-8081}:80'
     depends_on:
       - backend
+    networks:
+      - internal
     labels:
       - com.centurylinklabs.watchtower.enable=true
 
