@@ -72,6 +72,9 @@ from upstream:
   is downloaded by scripts/download-model.sh from a URL configured
   via MODEL_URL in .env, for example
   https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF/resolve/main/gemma-4-E4B-it-Q4_0.gguf
+  It runs with `--threads` set from LLM_THREADS in .env (default 4);
+  set this to the host's logical CPU count (`nproc`) for best
+  throughput on CPU-only hosts.
 
 The frontend and backend containers are labelled for
 watchtower (ghcr.io/nicholas-fedor/watchtower, an actively
