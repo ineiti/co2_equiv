@@ -51,7 +51,8 @@ field.
 # Setup
 
 This tool uses three docker containers, configured in
-a docker-compose.yaml. Only the first two are built by this
+a docker-compose.yaml, plus a watchtower container that
+keeps them up to date. Only the first two are built by this
 repo's CI/CD and pushed to ghcr.io; the third is pulled as-is
 from upstream:
 
@@ -71,6 +72,15 @@ from upstream:
   is downloaded by scripts/download-model.sh from a URL configured
   via MODEL_URL in .env, for example
   https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF/resolve/main/gemma-4-E4B-it-Q4_0.gguf
+
+The frontend and backend containers are labelled for
+watchtower (ghcr.io/nicholas-fedor/watchtower, an actively
+maintained fork of the original, now-archived watchtower
+project). It polls ghcr.io every 5 minutes and recreates
+either container when CI/CD has pushed a newer `:latest`
+image, so a production host stays current without manual
+intervention. The llm container is pinned by digest on
+purpose and is not watched.
 
 The SYSTEM_PROMPT.md tells the model to return a JSON
 {"calc": "calculation", "co2": "x kg"}
@@ -100,6 +110,6 @@ prettier pre-commit check.
 static file server that also proxies `/api/*` to the backend
 (mirroring what frontend/nginx.conf does in production), so the
 three "devbox run" processes together are enough to exercise the
-full flow locally without docker. `docker compose up --build`
-remains available to run the stack exactly as it runs in
-production.
+full flow locally without docker. `docker compose up` remains
+available to run the stack exactly as it runs in production,
+pulling the frontend and backend images from ghcr.io.

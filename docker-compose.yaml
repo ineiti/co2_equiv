@@ -9,9 +9,7 @@ services:
       - '8080'
 
   backend:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
+    image: ghcr.io/ineiti/co2-equiv-backend:latest
     environment:
       - LLM_URL=http://llm:8080/v1/chat/completions
       - HISTORY_PATH=/data/fastapi/history.json
@@ -21,12 +19,25 @@ services:
       - llm
     expose:
       - '8000'
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
 
   frontend:
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
+    image: ghcr.io/ineiti/co2-equiv-frontend:latest
     ports:
       - '${FRONTEND_PORT:-8081}:80'
     depends_on:
       - backend
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+
+  watchtower:
+    # Maintained fork of watchtower (original project archived 2025-12-17).
+    image: ghcr.io/nicholas-fedor/watchtower:latest
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_LABEL_ENABLE=true
+      - WATCHTOWER_POLL_INTERVAL=300
+      - WATCHTOWER_CLEANUP=true
