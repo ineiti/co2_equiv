@@ -4,13 +4,121 @@ import httpx
 import pytest
 import respx
 
-from app.llm_client import EstimateError, get_estimate, warmup_cache
+from app.llm_client import EstimateError, get_estimate, stream_estimate, warmup_cache
 
 LLM_URL = "http://llm:8080/v1/chat/completions"
 
 
 def _openai_response(content: str) -> dict:
     return {"choices": [{"message": {"content": content}}]}
+
+
+def _sse_response(*deltas: dict) -> httpx.Response:
+    lines = []
+    for delta in deltas:
+        lines.append(f"data: {json.dumps({'choices': [{'delta': delta}]})}\n\n")
+    lines.append("data: [DONE]\n\n")
+    return httpx.Response(200, content="".join(lines).encode())
+
+
+def _sse_response_no_done(*deltas: dict) -> httpx.Response:
+    lines = [f"data: {json.dumps({'choices': [{'delta': d}]})}\n\n" for d in deltas]
+    return httpx.Response(200, content="".join(lines).encode())
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_stream_estimate_yields_reasoning_then_result():
+    respx.post(LLM_URL).mock(
+        return_value=_sse_response(
+            {"reasoning_content": "Thinking"},
+            {"reasoning_content": " about it"},
+            {"content": '{"calc": "x", "co2": "4.3kg"}'},
+        )
+    )
+    async with httpx.AsyncClient() as client:
+        events = [e async for e in stream_estimate("drove 25km", LLM_URL, "system prompt", client)]
+    assert events == [
+        ("reasoning", "Thinking"),
+        ("reasoning", " about it"),
+        ("result", {"calc": "x", "co2": "4.3kg"}),
+    ]
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_stream_estimate_with_no_reasoning_content():
+    respx.post(LLM_URL).mock(return_value=_sse_response({"content": '{"co2": "unknown"}'}))
+    async with httpx.AsyncClient() as client:
+        events = [e async for e in stream_estimate("hello", LLM_URL, "system prompt", client)]
+    assert events == [("result", {"co2": "unknown"})]
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_stream_estimate_restarts_on_malformed_then_succeeds():
+    route = respx.post(LLM_URL)
+    route.side_effect = [
+        _sse_response({"reasoning_content": "oops"}, {"content": "not json"}),
+        _sse_response({"reasoning_content": "retry"}, {"content": '{"co2": "unknown"}'}),
+    ]
+    async with httpx.AsyncClient() as client:
+        events = [e async for e in stream_estimate("hello", LLM_URL, "system prompt", client)]
+    assert events == [
+        ("reasoning", "oops"),
+        ("restart", None),
+        ("reasoning", "retry"),
+        ("result", {"co2": "unknown"}),
+    ]
+    assert route.call_count == 2
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_stream_estimate_fails_after_retry():
+    respx.post(LLM_URL).mock(return_value=_sse_response({"content": "not json"}))
+    async with httpx.AsyncClient() as client:
+        events = [e async for e in stream_estimate("hello", LLM_URL, "system prompt", client)]
+    assert events[-2] == ("restart", None)
+    assert events[-1][0] == "error"
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_stream_estimate_unreachable_retries_then_errors():
+    respx.post(LLM_URL).mock(side_effect=httpx.ConnectError("boom"))
+    async with httpx.AsyncClient() as client:
+        events = [e async for e in stream_estimate("hello", LLM_URL, "system prompt", client)]
+    assert events[-1][0] == "error"
+    assert events.count(("restart", None)) == 1
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_stream_estimate_preserves_special_characters_in_reasoning():
+    tricky_text = 'He said "340 km" → 0.15/km\nnewline, emoji 🚗'
+    respx.post(LLM_URL).mock(
+        return_value=_sse_response(
+            {"reasoning_content": tricky_text},
+            {"content": '{"co2": "unknown"}'},
+        )
+    )
+    async with httpx.AsyncClient() as client:
+        events = [e async for e in stream_estimate("hello", LLM_URL, "system prompt", client)]
+    assert events[0] == ("reasoning", tricky_text)
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_stream_estimate_connection_drops_mid_stream():
+    respx.post(LLM_URL).mock(
+        return_value=_sse_response_no_done({"reasoning_content": "partial thought, then..."})
+        # no [DONE], no content chunk — simulates the connection ending early
+    )
+    async with httpx.AsyncClient() as client:
+        events = [e async for e in stream_estimate("hello", LLM_URL, "system prompt", client)]
+    assert events[0] == ("reasoning", "partial thought, then...")
+    assert events[-1][0] == "error"
 
 
 @pytest.mark.asyncio

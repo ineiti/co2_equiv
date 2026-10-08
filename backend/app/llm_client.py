@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+from collections.abc import AsyncIterator
 
 import httpx
 
@@ -52,6 +53,66 @@ async def _call_once(
         raise ValueError(f"expected string content, got: {content!r}")
     data = json.loads(_strip_think_block(content))
     return _validate_shape(data)
+
+
+async def _stream_once(
+    text: str, llm_url: str, system_prompt: str, client: httpx.AsyncClient
+) -> AsyncIterator[tuple[str, str | dict]]:
+    content_parts: list[str] = []
+    async with client.stream(
+        "POST",
+        llm_url,
+        json={
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": text},
+            ],
+            "stream": True,
+        },
+        timeout=180.0,
+    ) as response:
+        response.raise_for_status()
+        async for line in response.aiter_lines():
+            if not line.startswith("data: "):
+                continue
+            payload = line[len("data: ") :]
+            if payload == "[DONE]":
+                break
+            chunk = json.loads(payload)
+            delta = chunk["choices"][0]["delta"]
+            reasoning_delta = delta.get("reasoning_content")
+            if reasoning_delta:
+                yield ("reasoning", reasoning_delta)
+            content_delta = delta.get("content")
+            if content_delta:
+                content_parts.append(content_delta)
+
+    full_content = "".join(content_parts)
+    data = json.loads(_strip_think_block(full_content))
+    yield ("result", _validate_shape(data))
+
+
+async def stream_estimate(
+    text: str, llm_url: str, system_prompt: str, client: httpx.AsyncClient
+) -> AsyncIterator[tuple[str, str | dict | None]]:
+    last_error: Exception | None = None
+    for attempt in range(2):
+        try:
+            async for event in _stream_once(text, llm_url, system_prompt, client):
+                yield event
+            return
+        except (
+            httpx.HTTPError,
+            json.JSONDecodeError,
+            ValueError,
+            KeyError,
+            IndexError,
+            TypeError,
+        ) as exc:
+            last_error = exc
+            if attempt == 0:
+                yield ("restart", None)
+    yield ("error", f"LLM call failed after retry: {last_error}")
 
 
 async def warmup_cache(
