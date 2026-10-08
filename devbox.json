@@ -3,7 +3,7 @@
   "shell": {
     "scripts": {
       "llm": "./scripts/download-model.sh && llama-server -m ./data/llm/model.gguf --port ${LLM_PORT:-8080}",
-      "backend": "mkdir -p data/fastapi && . $VENV_DIR/bin/activate && cd backend && pip install -q -e '.[dev]' && LLM_URL=http://localhost:${LLM_PORT:-8080}/v1/chat/completions HISTORY_PATH=../data/fastapi/history.json uvicorn app.main:app --reload --port ${BACKEND_PORT:-8000}",
+      "backend": "mkdir -p data/fastapi && . $VENV_DIR/bin/activate && cd backend && pip install -q -e '.[dev]' && LLM_URL=http://localhost:${LLM_PORT:-8080}/v1/chat/completions HISTORY_PATH=../data/fastapi/history.json EMPTY_HISTORY_PATH=../data/fastapi/history_empty.json uvicorn app.main:app --reload --port ${BACKEND_PORT:-8000}",
       "front": "node ./frontend/dev-server.mjs",
       "test": ". $VENV_DIR/bin/activate && cd backend && pip install -q -e '.[dev]' && pytest -v && cd ../frontend && npm install --silent && npm test",
       "fmt": "prettier --write .",

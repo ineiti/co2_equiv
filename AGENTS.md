@@ -78,25 +78,34 @@ $backend_upstream$request_uri;` pattern instead of a plain
   full stack at http://localhost:8081 without docker compose.
 - History (`backend/app/history.py`, `GET /api/history`) writes to
   `HISTORY_PATH` (default `/data/fastapi/history.json`, mounted from
-  `./data/fastapi` in docker-compose.yaml). `append_history` does an
-  atomic write via `tempfile.mkstemp` + `os.replace`, and explicitly
-  `os.chmod`s the temp file to 0644 before the rename — `mkstemp`
-  defaults to 0600, which would otherwise leave the host-mounted file
-  unreadable by a non-root user. A failed history write (`OSError`,
-  e.g. read-only mount) is caught in `main.py` and logged, not
-  surfaced as a 500 — history is a non-essential enhancement and must
-  never break a successful estimate. `devbox run backend` now also
-  does `mkdir -p data/fastapi` first and sets
-  `HISTORY_PATH=../data/fastapi/history.json`, so local dev writes
-  alongside the docker-compose volume path instead of the
+  `./data/fastapi` in docker-compose.yaml). `append_history` keeps the
+  full list (newest first, no truncation) and does an atomic write via
+  `tempfile.mkstemp` + `os.replace`, explicitly `os.chmod`ing the temp
+  file to 0644 before the rename — `mkstemp` defaults to 0600, which
+  would otherwise leave the host-mounted file unreadable by a non-root
+  user. A failed history write (`OSError`, e.g. read-only mount) is
+  caught in `main.py` and logged, not surfaced as a 500 — history is a
+  non-essential enhancement and must never break a successful
+  estimate. `GET /api/history` returns only the 10 newest entries
+  (`HISTORY_DISPLAY_LIMIT` in `main.py`) even though the file on disk
+  keeps everything. `devbox run backend` now also does
+  `mkdir -p data/fastapi` first and sets
+  `HISTORY_PATH=../data/fastapi/history.json` and
+  `EMPTY_HISTORY_PATH=../data/fastapi/history_empty.json`, so local dev
+  writes alongside the docker-compose volume path instead of the
   container-only default.
-- `main.py` only persists a history entry when `co2` matches the same
-  `^-?\d+(\.\d+)?kg$` shape that `frontend/co2.js`'s `parseCo2`
-  accepts (see `_CO2_PATTERN` in `main.py`). This is intentionally
-  duplicated rather than shared, so that what gets saved to history
-  matches what the frontend would actually render as a result on that
-  same request. If `parseCo2`'s pattern changes, update `_CO2_PATTERN`
-  to match.
+- `main.py`'s `_maybe_save_history` only writes to the main
+  `HISTORY_PATH` when `co2` matches the same `^-?\d+(\.\d+)?kg$` shape
+  that `frontend/co2.js`'s `parseCo2` accepts (see `_CO2_PATTERN` in
+  `main.py`). This is intentionally duplicated rather than shared, so
+  that what gets saved to history matches what the frontend would
+  actually render as a result on that same request. If `parseCo2`'s
+  pattern changes, update `_CO2_PATTERN` to match. Anything that
+  doesn't match (e.g. `{"co2": "unknown"}` or an unparseable `co2`) is
+  instead appended to `EMPTY_HISTORY_PATH` (default
+  `/data/fastapi/history_empty.json`) rather than being dropped, so
+  low-value/unparseable answers stay available for review without
+  polluting the main, user-facing history.
 - Share buttons (Mastodon/Threads/LinkedIn) and the `?text=` shared
   link both live entirely client-side; the backend only knows about
   them via the `save` field on `POST /api/estimate` (`EstimateRequest.

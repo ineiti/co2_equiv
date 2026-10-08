@@ -30,15 +30,15 @@ def test_append_history_prepends_newest_first(tmp_path):
     assert load_history(str(path)) == [second, first]
 
 
-def test_append_history_truncates_to_max_entries(tmp_path):
+def test_append_history_keeps_all_entries(tmp_path):
     path = tmp_path / "history.json"
     for i in range(25):
         entry = {"text": str(i), "calc": "c", "co2": "1kg", "timestamp": str(i)}
-        result = append_history(str(path), entry, max_entries=20)
+        result = append_history(str(path), entry)
 
-    assert len(result) == 20
+    assert len(result) == 25
     assert result[0]["text"] == "24"
-    assert result[-1]["text"] == "5"
+    assert result[-1]["text"] == "0"
 
 
 def test_load_history_corrupt_file_returns_empty_list(tmp_path):

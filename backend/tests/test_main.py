@@ -12,12 +12,15 @@ client = TestClient(app)
 @pytest.fixture(autouse=True)
 def _isolated_history_path(tmp_path, monkeypatch):
     monkeypatch.setattr("app.main.HISTORY_PATH", str(tmp_path / "history.json"))
+    monkeypatch.setattr("app.main.EMPTY_HISTORY_PATH", str(tmp_path / "history_empty.json"))
 
 
-def test_maybe_save_history_skips_unknown(tmp_path, monkeypatch):
-    monkeypatch.setattr("app.main.HISTORY_PATH", str(tmp_path / "history.json"))
+def test_maybe_save_history_routes_unknown_to_empty_history(tmp_path):
     _maybe_save_history("hello", {"co2": "unknown"})
     assert load_history(str(tmp_path / "history.json")) == []
+    [entry] = load_history(str(tmp_path / "history_empty.json"))
+    assert entry["text"] == "hello"
+    assert entry["co2"] == "unknown"
 
 
 def test_estimate_stream_emits_reasoning_then_result():
@@ -109,22 +112,49 @@ def test_valid_estimate_is_recorded_in_history():
     assert "timestamp" in entry
 
 
-def test_unknown_estimate_is_not_recorded_in_history():
+def test_unknown_estimate_is_routed_to_empty_history(tmp_path):
+    empty_path = tmp_path / "history_empty.json"
+
     with patch("app.main.get_estimate", new=AsyncMock(return_value={"co2": "unknown"})):
         client.post("/api/estimate", json={"text": "hello"})
 
-    response = client.get("/api/history")
-    assert response.json() == []
+    assert client.get("/api/history").json() == []
+    [entry] = load_history(str(empty_path))
+    assert entry["text"] == "hello"
+    assert entry["co2"] == "unknown"
 
 
-def test_unparseable_co2_is_not_recorded_in_history():
+def test_unparseable_co2_is_routed_to_empty_history(tmp_path):
+    empty_path = tmp_path / "history_empty.json"
+
     with patch(
         "app.main.get_estimate", new=AsyncMock(return_value={"calc": "x", "co2": "~4kg"})
     ):
         client.post("/api/estimate", json={"text": "drove 25km"})
 
+    assert client.get("/api/history").json() == []
+    [entry] = load_history(str(empty_path))
+    assert entry["text"] == "drove 25km"
+    assert entry["co2"] == "~4kg"
+
+
+def test_empty_history_not_recorded_when_save_false(tmp_path):
+    empty_path = tmp_path / "history_empty.json"
+
+    with patch("app.main.get_estimate", new=AsyncMock(return_value={"co2": "unknown"})):
+        client.post("/api/estimate", json={"text": "hello", "save": False})
+
+    assert load_history(str(empty_path)) == []
+
+
+def test_history_endpoint_returns_only_last_10_entries():
+    with patch("app.main.get_estimate", new=AsyncMock(return_value={"calc": "x", "co2": "1kg"})):
+        for i in range(15):
+            client.post("/api/estimate", json={"text": str(i)})
+
     response = client.get("/api/history")
-    assert response.json() == []
+    texts = [entry["text"] for entry in response.json()]
+    assert texts == [str(i) for i in range(14, 4, -1)]
 
 
 def test_save_false_does_not_record_history():

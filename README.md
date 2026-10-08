@@ -24,7 +24,7 @@ with the estimated distance they could travel.
 
 It also works nicely on a mobile device.
 
-Below the result, the page shows the last 20 estimates (text,
+Below the result, the page shows the last 10 estimates (text,
 CO2 result, and timestamp), newest first. This list is loaded
 once on page load from the backend's history, and updated
 locally as new estimates come in.
@@ -63,10 +63,15 @@ from upstream:
 - backend - a small FastAPI service which injects SYSTEM_PROMPT.md
   as the system prompt, calls the llm container's OpenAI-compatible
   API, validates the JSON shape it gets back, and returns it to
-  the frontend. Every successful estimate is appended to a history
-  file (JSON array, newest first, capped at the last 20 entries),
-  stored at HISTORY_PATH (default /data/fastapi/history.json,
-  mounted from ./data/fastapi). GET /api/history returns that list.
+  the frontend. Every estimate with a recognizable "<number>kg" co2
+  result is appended to a history file (JSON array, newest first,
+  kept in full), stored at HISTORY_PATH (default
+  /data/fastapi/history.json, mounted from ./data/fastapi). Estimates
+  without a usable co2 result (e.g. "unknown" or an unparseable value)
+  are instead appended to EMPTY_HISTORY_PATH (default
+  /data/fastapi/history_empty.json), so they're kept for review without
+  cluttering the main history. GET /api/history returns only the 10
+  newest entries from the main history file.
 - llm - the official ghcr.io/ggml-org/llama.cpp:server image,
   serving a GGUF model file stored in ./data/llm. The model itself
   is downloaded by scripts/download-model.sh from a URL configured

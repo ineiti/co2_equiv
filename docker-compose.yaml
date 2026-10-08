@@ -30,6 +30,7 @@ services:
     environment:
       - LLM_URL=http://llm:8080/v1/chat/completions
       - HISTORY_PATH=/data/fastapi/history.json
+      - EMPTY_HISTORY_PATH=/data/fastapi/history_empty.json
     volumes:
       - ./data/fastapi:/data/fastapi
     depends_on:

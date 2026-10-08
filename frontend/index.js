@@ -8,7 +8,7 @@ import {
   consumeEventStream,
 } from './co2.js';
 
-const MAX_HISTORY_ENTRIES = 20;
+const MAX_HISTORY_ENTRIES = 10;
 const MASTODON_INSTANCE_KEY = 'mastodonInstance';
 
 const form = document.getElementById('estimate-form');

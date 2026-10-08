@@ -14,9 +14,8 @@ def load_history(path: str) -> list:
     return data
 
 
-def append_history(path: str, entry: dict, max_entries: int = 20) -> list:
+def append_history(path: str, entry: dict) -> list:
     history = [entry] + load_history(path)
-    history = history[:max_entries]
 
     directory = os.path.dirname(path) or "."
     os.makedirs(directory, exist_ok=True)
