@@ -79,9 +79,14 @@ from upstream:
   slot's KV cache instead of landing on a different, cold slot;
   only the first request after an llm restart pays the full cost
   of processing the multi-thousand-token SYSTEM_PROMPT.md. The
-  backend's `depends_on` waits for llm's healthcheck and restarts
-  whenever llm is recreated, so its startup warms this cache in
-  the background before any real user request arrives.
+  backend's `depends_on` waits for llm's healthcheck before its
+  own startup, so a plain `docker compose up -d` always re-warms
+  this cache in the background after an llm change. Compose's
+  `restart: true` only re-triggers that startup automatically
+  when llm is recreated in that same `up` invocation; after
+  recreating llm on its own (e.g. `docker compose up -d llm`),
+  also run `docker compose up -d` (or `restart backend`) so the
+  warmup actually re-runs.
 
 The frontend and backend containers are labelled for
 watchtower (ghcr.io/nicholas-fedor/watchtower, an actively
