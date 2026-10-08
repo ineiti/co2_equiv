@@ -135,3 +135,24 @@ share-offsite`) because each user is on their own instance. The
   the Mastodon prompt flow end-to-end. Verified instead by unit tests
   on the pure `co2.js` helpers (`buildShareUrl`, `buildShareText`,
   `normalizeMastodonInstance`) and by reading through the DOM wiring.
+- `POST /api/estimate/stream` (added for the live reasoning panel) commits
+  to its first attempt once any `reasoning` chunk has reached the
+  client — a mid-stream failure triggers a `restart` SSE event and a
+  fresh retry, rather than the silent single retry `/api/estimate` does.
+  The frontend's `runEstimate` in `index.js` treats `restart` as "clear
+  the panel and keep waiting," not as a final error.
+- `frontend/dev-server.mjs`'s backend proxy streams response chunks
+  through as they arrive (no longer buffers via `arrayBuffer()`) so that
+  `devbox run front` exercises the same incremental-rendering behavior
+  as the real nginx container's `proxy_buffering off` on
+  `/api/estimate/stream`.
+- `docker-compose.yaml`'s `backend`/`frontend` services pull prebuilt
+  images from `ghcr.io/ineiti/co2-equiv-*:latest`, not a local build from
+  `backend/Dockerfile`/`frontend/Dockerfile` — `docker compose up --build`
+  does NOT rebuild those two from the local source tree (there is no
+  `build:` key for them), so it only re-pulls/runs the last-published
+  release. To actually exercise local backend/frontend changes against
+  the real nginx container, point a `docker-compose.override.yml` (or
+  equivalent) at `build: ./backend` / `build: ./frontend` instead, or
+  rely on `devbox run llm && devbox run backend && devbox run front`
+  (which does run local code, see above) for pre-release verification.
