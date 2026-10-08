@@ -5,7 +5,7 @@ import {
   buildShareUrl,
   buildShareText,
   normalizeMastodonInstance,
-  parseSseChunk,
+  consumeEventStream,
 } from './co2.js';
 
 const MAX_HISTORY_ENTRIES = 20;
@@ -111,23 +111,6 @@ reasoningToggle.addEventListener('click', () => {
   reasoningCollapsed = reasoningPanel.classList.contains('collapsed');
 });
 
-async function consumeEventStream(response, handlers) {
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = '';
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buffer += decoder.decode(value, { stream: true });
-    const { events, remainder } = parseSseChunk(buffer);
-    buffer = remainder;
-    for (const event of events) {
-      handlers[event.type]?.(JSON.parse(event.data));
-    }
-  }
-}
-
 function renderResult(text, data, save) {
   const kg = parseCo2(data.co2);
 
@@ -157,7 +140,13 @@ function renderResult(text, data, save) {
   }
 }
 
+let currentRunController = null;
+
 async function runEstimate(text, { save, showReasoning = true }) {
+  currentRunController?.abort();
+  const controller = new AbortController();
+  currentRunController = controller;
+
   showState({ showLoading: true });
   resetReasoningPanel();
 
@@ -166,31 +155,33 @@ async function runEstimate(text, { save, showReasoning = true }) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, save }),
+      signal: controller.signal,
     });
     if (!response.ok) {
       throw new Error(`request failed: ${response.status}`);
     }
 
-    await consumeEventStream(response, {
-      reasoning: (delta) => {
-        if (!showReasoning) return;
-        loading.hidden = true;
-        appendReasoning(delta);
+    const outcome = await consumeEventStream(
+      response,
+      {
+        reasoning: (delta) => {
+          if (!showReasoning) return;
+          loading.hidden = true;
+          appendReasoning(delta);
+        },
+        restart: () => {
+          if (!showReasoning) return;
+          resetReasoningPanel();
+          loading.hidden = false;
+        },
       },
-      restart: () => {
-        if (!showReasoning) return;
-        resetReasoningPanel();
-        loading.hidden = false;
-      },
-      result: (data) => {
-        collapseReasoningPanel();
-        renderResult(text, data, save);
-      },
-      error: () => {
-        throw new Error('stream reported an error');
-      },
-    });
+      controller.signal,
+    );
+    collapseReasoningPanel();
+    renderResult(text, outcome.data, save);
   } catch (err) {
+    if (err.name === 'AbortError' || controller.signal.aborted) return;
+    resetReasoningPanel();
     showState({ showFetchError: true });
   }
 }

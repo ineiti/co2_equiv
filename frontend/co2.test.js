@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
   parseCo2,
   toDistances,
@@ -7,6 +7,7 @@ import {
   buildShareText,
   normalizeMastodonInstance,
   parseSseChunk,
+  consumeEventStream,
 } from './co2.js';
 
 describe('parseCo2', () => {
@@ -163,5 +164,91 @@ describe('parseSseChunk', () => {
     const result = parseSseChunk('');
     expect(result.events).toEqual([]);
     expect(result.remainder).toBe('');
+  });
+});
+
+function sseResponse(chunks) {
+  const stream = new ReadableStream({
+    start(controller) {
+      for (const chunk of chunks) controller.enqueue(new TextEncoder().encode(chunk));
+      controller.close();
+    },
+  });
+  return new Response(stream);
+}
+
+describe('consumeEventStream', () => {
+  it('resolves with the result payload when a result event arrives', async () => {
+    const response = sseResponse(['event: result\ndata: {"co2": "1kg"}\n\n']);
+    const reasoning = vi.fn();
+    const outcome = await consumeEventStream(response, { reasoning });
+    expect(outcome).toEqual({ type: 'result', data: { co2: '1kg' } });
+    expect(reasoning).not.toHaveBeenCalled();
+  });
+
+  it('calls the reasoning handler for each reasoning event before resolving', async () => {
+    const response = sseResponse([
+      'event: reasoning\ndata: "a"\n\n',
+      'event: reasoning\ndata: "b"\n\n',
+      'event: result\ndata: {"co2": "1kg"}\n\n',
+    ]);
+    const seen = [];
+    await consumeEventStream(response, { reasoning: (d) => seen.push(d) });
+    expect(seen).toEqual(['a', 'b']);
+  });
+
+  it('calls the restart handler when a restart event arrives', async () => {
+    const response = sseResponse([
+      'event: reasoning\ndata: "a"\n\n',
+      'event: restart\ndata: null\n\n',
+      'event: reasoning\ndata: "b"\n\n',
+      'event: result\ndata: {"co2": "1kg"}\n\n',
+    ]);
+    const restart = vi.fn();
+    await consumeEventStream(response, { restart });
+    expect(restart).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects when an error event arrives', async () => {
+    const response = sseResponse(['event: error\ndata: "boom"\n\n']);
+    await expect(consumeEventStream(response, {})).rejects.toThrow('boom');
+  });
+
+  it('rejects when the stream ends with no result or error event', async () => {
+    const response = sseResponse(['event: reasoning\ndata: "a"\n\n']);
+    await expect(consumeEventStream(response, {})).rejects.toThrow('stream ended without a result');
+  });
+
+  it('reassembles an event split across two stream reads', async () => {
+    const response = sseResponse([
+      'event: reasoning\ndata: "hel',
+      'lo"\n\n',
+      'event: result\ndata: {"co2": "1kg"}\n\n',
+    ]);
+    const seen = [];
+    await consumeEventStream(response, { reasoning: (d) => seen.push(d) });
+    expect(seen).toEqual(['hello']);
+  });
+
+  it('stops dispatching once the given signal is aborted', async () => {
+    const controller = new AbortController();
+    const response = sseResponse([
+      'event: reasoning\ndata: "a"\n\n',
+      'event: reasoning\ndata: "b"\n\n',
+      'event: result\ndata: {"co2": "1kg"}\n\n',
+    ]);
+    const seen = [];
+    const promise = consumeEventStream(
+      response,
+      {
+        reasoning: (d) => {
+          seen.push(d);
+          if (d === 'a') controller.abort();
+        },
+      },
+      controller.signal,
+    );
+    await expect(promise).rejects.toThrow('aborted');
+    expect(seen).toEqual(['a']);
   });
 });

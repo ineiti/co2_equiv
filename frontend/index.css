@@ -68,17 +68,6 @@ main {
   border: 1px solid rgba(128, 128, 128, 0.3);
   border-radius: 4px;
   overflow: hidden;
-  transition:
-    max-height 0.3s ease,
-    opacity 0.3s ease;
-  max-height: 200px;
-}
-
-#reasoning-panel.collapsed {
-  max-height: 0;
-  opacity: 0;
-  border-width: 0;
-  margin-top: 0;
 }
 
 #reasoning-toggle {
@@ -101,6 +90,17 @@ main {
   white-space: pre-wrap;
   max-height: 150px;
   overflow-y: auto;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.3s ease,
+    padding 0.3s ease;
+}
+
+#reasoning-panel.collapsed #reasoning-text {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 #result {

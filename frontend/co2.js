@@ -67,3 +67,45 @@ export function parseSseChunk(buffer) {
 
   return { events, remainder };
 }
+
+// Consumes an SSE Response produced by POST /api/estimate/stream. Dispatches
+// `reasoning`/`restart` events to the matching handler as they arrive, then
+// resolves with the terminal `result` event's payload, or rejects on an
+// `error` event or if the stream ends without either. If `signal` aborts,
+// stops dispatching further events and rejects immediately - the caller is
+// responsible for ignoring/discarding that rejection if it was intentional.
+export async function consumeEventStream(response, handlers, signal) {
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  try {
+    while (true) {
+      if (signal?.aborted) {
+        throw new Error('stream consumption aborted');
+      }
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const { events, remainder } = parseSseChunk(buffer);
+      buffer = remainder;
+      for (const event of events) {
+        if (signal?.aborted) {
+          throw new Error('stream consumption aborted');
+        }
+        const data = JSON.parse(event.data);
+        if (event.type === 'result') {
+          return { type: 'result', data };
+        }
+        if (event.type === 'error') {
+          throw new Error(typeof data === 'string' ? data : 'stream reported an error');
+        }
+        handlers[event.type]?.(data);
+      }
+    }
+  } finally {
+    reader.releaseLock?.();
+  }
+
+  throw new Error('stream ended without a result or error event');
+}
