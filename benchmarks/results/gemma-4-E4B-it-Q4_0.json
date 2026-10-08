@@ -1,0 +1,1344 @@
+{
+  "label": "gemma",
+  "cold_s": 4.057015208003577,
+  "cases": [
+    {
+      "text": "Flight from London to Paris",
+      "expected": 91.80000000000001,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"340 km \u00d7 0.25 = 85\", \"co2\": \"85kg\"}",
+          "result": {
+            "calc": "340 km \u00d7 0.25 = 85",
+            "co2": "85kg"
+          },
+          "error": null,
+          "prompt_ms": 68.953,
+          "predicted_ms": 2587.247,
+          "predicted_n": 185,
+          "completion_tokens": 185
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"340 km \u00d7 0.25 = 85\", \"co2\": \"85kg\"}",
+          "result": {
+            "calc": "340 km \u00d7 0.25 = 85",
+            "co2": "85kg"
+          },
+          "error": null,
+          "prompt_ms": 19.669,
+          "predicted_ms": 2713.702,
+          "predicted_n": 193,
+          "completion_tokens": 193
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"340 km \u00d7 0.25 = 85\", \"co2\": \"85kg\"}",
+          "result": {
+            "calc": "340 km \u00d7 0.25 = 85",
+            "co2": "85kg"
+          },
+          "error": null,
+          "prompt_ms": 17.941,
+          "predicted_ms": 2329.915,
+          "predicted_n": 167,
+          "completion_tokens": 167
+        }
+      ]
+    },
+    {
+      "text": "Return flight from Frankfurt to Singapore",
+      "expected": 3337.2,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"10300 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 3307.2\", \"co2\": \"3300kg\"}",
+          "result": {
+            "calc": "10300 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 3307.2",
+            "co2": "3300kg"
+          },
+          "error": null,
+          "prompt_ms": 66.028,
+          "predicted_ms": 7520.727,
+          "predicted_n": 534,
+          "completion_tokens": 534
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"10300 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 3337.2\", \"co2\": \"3300kg\"}",
+          "result": {
+            "calc": "10300 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 3337.2",
+            "co2": "3300kg"
+          },
+          "error": null,
+          "prompt_ms": 43.571,
+          "predicted_ms": 10012.282,
+          "predicted_n": 716,
+          "completion_tokens": 716
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"10300 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 3359.2\", \"co2\": \"3400kg\"}",
+          "result": {
+            "calc": "10300 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 3359.2",
+            "co2": "3400kg"
+          },
+          "error": null,
+          "prompt_ms": 44.339,
+          "predicted_ms": 6464.231,
+          "predicted_n": 458,
+          "completion_tokens": 458
+        }
+      ]
+    },
+    {
+      "text": "Flight from Zurich to Dubai in business class",
+      "expected": 2255.04,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"4800 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 \u00d7 2.9 = 2223.36\", \"co2\": \"2200kg\"}",
+          "result": {
+            "calc": "4800 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 \u00d7 2.9 = 2223.36",
+            "co2": "2200kg"
+          },
+          "error": null,
+          "prompt_ms": 90.77,
+          "predicted_ms": 3486.084,
+          "predicted_n": 247,
+          "completion_tokens": 247
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"4800 km \u00d7 1.08 \u00d7 0.15 \u00d7 2.9 = 2250.48\", \"co2\": \"2300kg\"}",
+          "result": {
+            "calc": "4800 km \u00d7 1.08 \u00d7 0.15 \u00d7 2.9 = 2250.48",
+            "co2": "2300kg"
+          },
+          "error": null,
+          "prompt_ms": 19.49,
+          "predicted_ms": 7837.679,
+          "predicted_n": 551,
+          "completion_tokens": 551
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"4800 km \u00d7 1.08 \u00d7 0.15 \u00d7 2.9 = 2255.04\", \"co2\": \"2300kg\"}",
+          "result": {
+            "calc": "4800 km \u00d7 1.08 \u00d7 0.15 \u00d7 2.9 = 2255.04",
+            "co2": "2300kg"
+          },
+          "error": null,
+          "prompt_ms": 25.416,
+          "predicted_ms": 4619.265,
+          "predicted_n": 328,
+          "completion_tokens": 328
+        }
+      ]
+    },
+    {
+      "text": "Took the train 120 km in Switzerland",
+      "expected": 0.96,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"120 km \u00d7 0.008 = 0.96\", \"co2\": \"1.0kg\"}",
+          "result": {
+            "calc": "120 km \u00d7 0.008 = 0.96",
+            "co2": "1.0kg"
+          },
+          "error": null,
+          "prompt_ms": 93.938,
+          "predicted_ms": 1724.501,
+          "predicted_n": 123,
+          "completion_tokens": 123
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"train 120 km \u00d7 0.008 = 0.96\", \"co2\": \"1.0kg\"}",
+          "result": {
+            "calc": "train 120 km \u00d7 0.008 = 0.96",
+            "co2": "1.0kg"
+          },
+          "error": null,
+          "prompt_ms": 18.923,
+          "predicted_ms": 2544.522,
+          "predicted_n": 181,
+          "completion_tokens": 181
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"120 km \u00d7 0.008 = 0.96\", \"co2\": \"1.0kg\"}",
+          "result": {
+            "calc": "120 km \u00d7 0.008 = 0.96",
+            "co2": "1.0kg"
+          },
+          "error": null,
+          "prompt_ms": 18.757,
+          "predicted_ms": 1607.743,
+          "predicted_n": 116,
+          "completion_tokens": 116
+        }
+      ]
+    },
+    {
+      "text": "Drove an electric car 60 km in France",
+      "expected": 1.2,
+      "attempts": [
+        {
+          "outcome": "wrong_value",
+          "raw_content": "{\"calc\": \"60 km \u00d7 0.05 = 3.0\", \"co2\": \"3.0kg\"}",
+          "result": {
+            "calc": "60 km \u00d7 0.05 = 3.0",
+            "co2": "3.0kg"
+          },
+          "error": null,
+          "prompt_ms": 94.36,
+          "predicted_ms": 4872.149,
+          "predicted_n": 345,
+          "completion_tokens": 345
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "{\"calc\": \"60 km \u00d7 0.05 = 3.0\", \"co2\": \"3.0kg\"}",
+          "result": {
+            "calc": "60 km \u00d7 0.05 = 3.0",
+            "co2": "3.0kg"
+          },
+          "error": null,
+          "prompt_ms": 18.395,
+          "predicted_ms": 6453.939,
+          "predicted_n": 457,
+          "completion_tokens": 457
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "{\"calc\": \"electric car 60 km \u00d7 0.05 = 3.0\", \"co2\": \"3.0kg\"}",
+          "result": {
+            "calc": "electric car 60 km \u00d7 0.05 = 3.0",
+            "co2": "3.0kg"
+          },
+          "error": null,
+          "prompt_ms": 18.894,
+          "predicted_ms": 6523.064,
+          "predicted_n": 458,
+          "completion_tokens": 458
+        }
+      ]
+    },
+    {
+      "text": "Took the bus instead of driving 15 km",
+      "expected": -1.0500000000000003,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"bus 15 km \u00d7 0.10 = 1.5; car 15 km \u00d7 0.17 = 2.55; 1.5 - 2.55 = -1.05\", \"co2\": \"-1.1kg\"}",
+          "result": {
+            "calc": "bus 15 km \u00d7 0.10 = 1.5; car 15 km \u00d7 0.17 = 2.55; 1.5 - 2.55 = -1.05",
+            "co2": "-1.1kg"
+          },
+          "error": null,
+          "prompt_ms": 91.577,
+          "predicted_ms": 7347.377,
+          "predicted_n": 517,
+          "completion_tokens": 517
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"(bus 15 km \u00d7 0.10) - (petrol car 15 km \u00d7 0.17) = 1.5 - 2.55 = -1.05\", \"co2\": \"-1.1kg\"}",
+          "result": {
+            "calc": "(bus 15 km \u00d7 0.10) - (petrol car 15 km \u00d7 0.17) = 1.5 - 2.55 = -1.05",
+            "co2": "-1.1kg"
+          },
+          "error": null,
+          "prompt_ms": 43.798,
+          "predicted_ms": 5097.962,
+          "predicted_n": 360,
+          "completion_tokens": 360
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"bus 15 km \u00d7 0.10 = 1.5; petrol car 15 km \u00d7 0.17 = 2.55; 1.5 - 2.55 = -1.05\", \"co2\": \"-1.1kg\"}",
+          "result": {
+            "calc": "bus 15 km \u00d7 0.10 = 1.5; petrol car 15 km \u00d7 0.17 = 2.55; 1.5 - 2.55 = -1.05",
+            "co2": "-1.1kg"
+          },
+          "error": null,
+          "prompt_ms": 17.963,
+          "predicted_ms": 8975.728,
+          "predicted_n": 634,
+          "completion_tokens": 634
+        }
+      ]
+    },
+    {
+      "text": "Biked 8 km instead of taking a taxi",
+      "expected": -1.36,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"bicycle 8 km \u00d7 0 - taxi 8 km \u00d7 0.17 = -1.36\", \"co2\": \"-1.4kg\"}",
+          "result": {
+            "calc": "bicycle 8 km \u00d7 0 - taxi 8 km \u00d7 0.17 = -1.36",
+            "co2": "-1.4kg"
+          },
+          "error": null,
+          "prompt_ms": 93.215,
+          "predicted_ms": 2924.737,
+          "predicted_n": 208,
+          "completion_tokens": 208
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"biked 8 km \u00d7 0 - taxi 8 km \u00d7 0.17 = -1.36\", \"co2\": \"-1.4kg\"}",
+          "result": {
+            "calc": "biked 8 km \u00d7 0 - taxi 8 km \u00d7 0.17 = -1.36",
+            "co2": "-1.4kg"
+          },
+          "error": null,
+          "prompt_ms": 18.659,
+          "predicted_ms": 559.579,
+          "predicted_n": 41,
+          "completion_tokens": 41
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"bicycle 8 km \u00d7 0 = 0; taxi 8 km \u00d7 0.17 = 1.36; 0 - 1.36 = -1.36\", \"co2\": \"-1.4kg\"}",
+          "result": {
+            "calc": "bicycle 8 km \u00d7 0 = 0; taxi 8 km \u00d7 0.17 = 1.36; 0 - 1.36 = -1.36",
+            "co2": "-1.4kg"
+          },
+          "error": null,
+          "prompt_ms": 16.035,
+          "predicted_ms": 5224.713,
+          "predicted_n": 366,
+          "completion_tokens": 366
+        }
+      ]
+    },
+    {
+      "text": "Planted a tree",
+      "expected": -20,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"planting a tree = -20\", \"co2\": \"-20kg\"}",
+          "result": {
+            "calc": "planting a tree = -20",
+            "co2": "-20kg"
+          },
+          "error": null,
+          "prompt_ms": 67.24,
+          "predicted_ms": 302.265,
+          "predicted_n": 22,
+          "completion_tokens": 22
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"planting a tree = -20\", \"co2\": \"-20kg\"}",
+          "result": {
+            "calc": "planting a tree = -20",
+            "co2": "-20kg"
+          },
+          "error": null,
+          "prompt_ms": 16.111,
+          "predicted_ms": 296.449,
+          "predicted_n": 22,
+          "completion_tokens": 22
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"planting a tree = -20\", \"co2\": \"-20kg\"}",
+          "result": {
+            "calc": "planting a tree = -20",
+            "co2": "-20kg"
+          },
+          "error": null,
+          "prompt_ms": 15.867,
+          "predicted_ms": 300.796,
+          "predicted_n": 22,
+          "completion_tokens": 22
+        }
+      ]
+    },
+    {
+      "text": "Planted 3 trees two years ago",
+      "expected": -120,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"3 trees \u00d7 2 years \u00d7 20 = -120\", \"co2\": \"-120kg\"}",
+          "result": {
+            "calc": "3 trees \u00d7 2 years \u00d7 20 = -120",
+            "co2": "-120kg"
+          },
+          "error": null,
+          "prompt_ms": 76.236,
+          "predicted_ms": 3357.303,
+          "predicted_n": 231,
+          "completion_tokens": 231
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"3 trees \u00d7 20 kg/year \u00d7 2 years = 120\", \"co2\": \"-120kg\"}",
+          "result": {
+            "calc": "3 trees \u00d7 20 kg/year \u00d7 2 years = 120",
+            "co2": "-120kg"
+          },
+          "error": null,
+          "prompt_ms": 19.065,
+          "predicted_ms": 3018.172,
+          "predicted_n": 207,
+          "completion_tokens": 207
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"3 trees \u00d7 2 years \u00d7 20 kg/year = 120\", \"co2\": \"-120kg\"}",
+          "result": {
+            "calc": "3 trees \u00d7 2 years \u00d7 20 kg/year = 120",
+            "co2": "-120kg"
+          },
+          "error": null,
+          "prompt_ms": 19.026,
+          "predicted_ms": 3235.219,
+          "predicted_n": 221,
+          "completion_tokens": 221
+        }
+      ]
+    },
+    {
+      "text": "A cappuccino and a croissant for breakfast",
+      "expected": 1.0,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"cappuccino = 0.5; croissant (butter, flour) 0.5 = 1.0\", \"co2\": \"1.0kg\"}",
+          "result": {
+            "calc": "cappuccino = 0.5; croissant (butter, flour) 0.5 = 1.0",
+            "co2": "1.0kg"
+          },
+          "error": null,
+          "prompt_ms": 103.196,
+          "predicted_ms": 566.501,
+          "predicted_n": 40,
+          "completion_tokens": 40
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"cappuccino = 0.5; croissant (flour + butter) ~ 0.67; 0.5 + 0.67 = 1.17\", \"co2\": \"1.2kg\"}",
+          "result": {
+            "calc": "cappuccino = 0.5; croissant (flour + butter) ~ 0.67; 0.5 + 0.67 = 1.17",
+            "co2": "1.2kg"
+          },
+          "error": null,
+          "prompt_ms": 16.003,
+          "predicted_ms": 13107.867,
+          "predicted_n": 887,
+          "completion_tokens": 887
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "{\"calc\": \"cappuccino/latte (cow milk) = 0.5; croissant (butter 12 + bread 1.4) = 13.4; 0.5 + 13.4 = 13.9\", \"co2\": \"14kg\"}",
+          "result": {
+            "calc": "cappuccino/latte (cow milk) = 0.5; croissant (butter 12 + bread 1.4) = 13.4; 0.5 + 13.4 = 13.9",
+            "co2": "14kg"
+          },
+          "error": null,
+          "prompt_ms": 24.229,
+          "predicted_ms": 3870.936,
+          "predicted_n": 266,
+          "completion_tokens": 266
+        }
+      ]
+    },
+    {
+      "text": "Bought a smartphone and a pair of jeans",
+      "expected": 95,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"smartphone + jeans = 70 + 25 = 95\", \"co2\": \"95kg\"}",
+          "result": {
+            "calc": "smartphone + jeans = 70 + 25 = 95",
+            "co2": "95kg"
+          },
+          "error": null,
+          "prompt_ms": 99.345,
+          "predicted_ms": 413.072,
+          "predicted_n": 30,
+          "completion_tokens": 30
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"smartphone = 70; jeans = 25; 70 + 25 = 95\", \"co2\": \"95kg\"}",
+          "result": {
+            "calc": "smartphone = 70; jeans = 25; 70 + 25 = 95",
+            "co2": "95kg"
+          },
+          "error": null,
+          "prompt_ms": 16.236,
+          "predicted_ms": 2533.582,
+          "predicted_n": 176,
+          "completion_tokens": 176
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"smartphone = 70; jeans = 25; 70 + 25 = 95\", \"co2\": \"95kg\"}",
+          "result": {
+            "calc": "smartphone = 70; jeans = 25; 70 + 25 = 95",
+            "co2": "95kg"
+          },
+          "error": null,
+          "prompt_ms": 18.314,
+          "predicted_ms": 2369.477,
+          "predicted_n": 165,
+          "completion_tokens": 165
+        }
+      ]
+    },
+    {
+      "text": "Showering for 10 minutes every day for a week",
+      "expected": 3.5,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"0.5 \u00d7 7 = 3.5\", \"co2\": \"3.5kg\"}",
+          "result": {
+            "calc": "0.5 \u00d7 7 = 3.5",
+            "co2": "3.5kg"
+          },
+          "error": null,
+          "prompt_ms": 99.374,
+          "predicted_ms": 2189.828,
+          "predicted_n": 153,
+          "completion_tokens": 153
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"shower 10 min = 0.5; 0.5 \u00d7 7 = 3.5\", \"co2\": \"3.5kg\"}",
+          "result": {
+            "calc": "shower 10 min = 0.5; 0.5 \u00d7 7 = 3.5",
+            "co2": "3.5kg"
+          },
+          "error": null,
+          "prompt_ms": 19.062,
+          "predicted_ms": 2393.318,
+          "predicted_n": 167,
+          "completion_tokens": 167
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"0.5 \u00d7 7 = 3.5\", \"co2\": \"3.5kg\"}",
+          "result": {
+            "calc": "0.5 \u00d7 7 = 3.5",
+            "co2": "3.5kg"
+          },
+          "error": null,
+          "prompt_ms": 18.188,
+          "predicted_ms": 2166.21,
+          "predicted_n": 153,
+          "completion_tokens": 153
+        }
+      ]
+    },
+    {
+      "text": "Commuting 10 km by car every day for a month (22 workdays)",
+      "expected": 37.400000000000006,
+      "attempts": [
+        {
+          "outcome": "wrong_value",
+          "raw_content": "{\"calc\": \"10 km * 2 trips/day * 22 days * 0.17 = 74.8\", \"co2\": \"75kg\"}",
+          "result": {
+            "calc": "10 km * 2 trips/day * 22 days * 0.17 = 74.8",
+            "co2": "75kg"
+          },
+          "error": null,
+          "prompt_ms": 105.396,
+          "predicted_ms": 5265.83,
+          "predicted_n": 368,
+          "completion_tokens": 368
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "{\"calc\": \"22 days \u00d7 20 km/day \u00d7 0.17 = 74.8\", \"co2\": \"75kg\"}",
+          "result": {
+            "calc": "22 days \u00d7 20 km/day \u00d7 0.17 = 74.8",
+            "co2": "75kg"
+          },
+          "error": null,
+          "prompt_ms": 18.801,
+          "predicted_ms": 6384.929,
+          "predicted_n": 451,
+          "completion_tokens": 451
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "{\"calc\": \"22 days \u00d7 (10 km \u00d7 2) \u00d7 0.17 = 74.8\", \"co2\": \"75kg\"}",
+          "result": {
+            "calc": "22 days \u00d7 (10 km \u00d7 2) \u00d7 0.17 = 74.8",
+            "co2": "75kg"
+          },
+          "error": null,
+          "prompt_ms": 18.567,
+          "predicted_ms": 4734.372,
+          "predicted_n": 336,
+          "completion_tokens": 336
+        }
+      ]
+    },
+    {
+      "text": "Ate 500g of beef",
+      "expected": 17.5,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"0.5 kg \u00d7 35 = 17.5\", \"co2\": \"18kg\"}",
+          "result": {
+            "calc": "0.5 kg \u00d7 35 = 17.5",
+            "co2": "18kg"
+          },
+          "error": null,
+          "prompt_ms": 91.813,
+          "predicted_ms": 2455.802,
+          "predicted_n": 174,
+          "completion_tokens": 174
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"0.5 kg \u00d7 35 = 17.5\", \"co2\": \"18kg\"}",
+          "result": {
+            "calc": "0.5 kg \u00d7 35 = 17.5",
+            "co2": "18kg"
+          },
+          "error": null,
+          "prompt_ms": 18.431,
+          "predicted_ms": 2290.055,
+          "predicted_n": 164,
+          "completion_tokens": 164
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "{\"calc\": \"500 g \u00d7 6 kg/meal = 3\", \"co2\": \"3kg\"}",
+          "result": {
+            "calc": "500 g \u00d7 6 kg/meal = 3",
+            "co2": "3kg"
+          },
+          "error": null,
+          "prompt_ms": 18.304,
+          "predicted_ms": 364.076,
+          "predicted_n": 27,
+          "completion_tokens": 27
+        }
+      ]
+    },
+    {
+      "text": "Bought 2 kg of chicken",
+      "expected": 12,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"2 kg \u00d7 6 = 12\", \"co2\": \"12kg\"}",
+          "result": {
+            "calc": "2 kg \u00d7 6 = 12",
+            "co2": "12kg"
+          },
+          "error": null,
+          "prompt_ms": 69.056,
+          "predicted_ms": 325.139,
+          "predicted_n": 24,
+          "completion_tokens": 24
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"2 kg \u00d7 6 = 12\", \"co2\": \"12kg\"}",
+          "result": {
+            "calc": "2 kg \u00d7 6 = 12",
+            "co2": "12kg"
+          },
+          "error": null,
+          "prompt_ms": 15.887,
+          "predicted_ms": 1103.989,
+          "predicted_n": 80,
+          "completion_tokens": 80
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"2 kg \u00d7 6\", \"co2\": \"12kg\"}",
+          "result": {
+            "calc": "2 kg \u00d7 6",
+            "co2": "12kg"
+          },
+          "error": null,
+          "prompt_ms": 15.855,
+          "predicted_ms": 263.501,
+          "predicted_n": 20,
+          "completion_tokens": 20
+        }
+      ]
+    },
+    {
+      "text": "Charged an electric car with 50 kWh in India",
+      "expected": 35.0,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"50 kWh \u00d7 0.70 = 35.0\", \"co2\": \"35kg\"}",
+          "result": {
+            "calc": "50 kWh \u00d7 0.70 = 35.0",
+            "co2": "35kg"
+          },
+          "error": null,
+          "prompt_ms": 93.185,
+          "predicted_ms": 2509.496,
+          "predicted_n": 179,
+          "completion_tokens": 179
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"50 kWh \u00d7 0.70 = 35\", \"co2\": \"35kg\"}",
+          "result": {
+            "calc": "50 kWh \u00d7 0.70 = 35",
+            "co2": "35kg"
+          },
+          "error": null,
+          "prompt_ms": 18.001,
+          "predicted_ms": 2103.723,
+          "predicted_n": 151,
+          "completion_tokens": 151
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"50 kWh \u00d7 0.7 = 35\", \"co2\": \"35kg\"}",
+          "result": {
+            "calc": "50 kWh \u00d7 0.7 = 35",
+            "co2": "35kg"
+          },
+          "error": null,
+          "prompt_ms": 18.495,
+          "predicted_ms": 364.252,
+          "predicted_n": 27,
+          "completion_tokens": 27
+        }
+      ]
+    },
+    {
+      "text": "Ran an air conditioner for 3 hours in the USA",
+      "expected": 1.2000000000000002,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"3 h \u00d7 1 kWh/h \u00d7 0.37 = 1.11\", \"co2\": \"1.1kg\"}",
+          "result": {
+            "calc": "3 h \u00d7 1 kWh/h \u00d7 0.37 = 1.11",
+            "co2": "1.1kg"
+          },
+          "error": null,
+          "prompt_ms": 93.568,
+          "predicted_ms": 9351.361,
+          "predicted_n": 662,
+          "completion_tokens": 662
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "{\"calc\": \"3 h \u00d7 (0.4 / 0.25) kWh/h \u00d7 0.37 kg/kWh (USA) = 1.776\", \"co2\": \"1.8kg\"}",
+          "result": {
+            "calc": "3 h \u00d7 (0.4 / 0.25) kWh/h \u00d7 0.37 kg/kWh (USA) = 1.776",
+            "co2": "1.8kg"
+          },
+          "error": null,
+          "prompt_ms": 44.495,
+          "predicted_ms": 7037.846,
+          "predicted_n": 486,
+          "completion_tokens": 486
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "{\"calc\": \"3 h \u00d7 (0.4 / 0.25 * 0.37) = 1.776\", \"co2\": \"1.8kg\"}",
+          "result": {
+            "calc": "3 h \u00d7 (0.4 / 0.25 * 0.37) = 1.776",
+            "co2": "1.8kg"
+          },
+          "error": null,
+          "prompt_ms": 18.44,
+          "predicted_ms": 10033.467,
+          "predicted_n": 716,
+          "completion_tokens": 716
+        }
+      ]
+    },
+    {
+      "text": "Ran the dishwasher twice",
+      "expected": 0.6,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"2 \u00d7 0.3 = 0.6\", \"co2\": \"0.6kg\"}",
+          "result": {
+            "calc": "2 \u00d7 0.3 = 0.6",
+            "co2": "0.6kg"
+          },
+          "error": null,
+          "prompt_ms": 67.262,
+          "predicted_ms": 1752.947,
+          "predicted_n": 126,
+          "completion_tokens": 126
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"dishwasher load 2 \u00d7 0.3 = 0.6\", \"co2\": \"0.6kg\"}",
+          "result": {
+            "calc": "dishwasher load 2 \u00d7 0.3 = 0.6",
+            "co2": "0.6kg"
+          },
+          "error": null,
+          "prompt_ms": 17.972,
+          "predicted_ms": 1738.92,
+          "predicted_n": 125,
+          "completion_tokens": 125
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"dishwasher load 2 \u00d7 0.3 = 0.6\", \"co2\": \"0.6kg\"}",
+          "result": {
+            "calc": "dishwasher load 2 \u00d7 0.3 = 0.6",
+            "co2": "0.6kg"
+          },
+          "error": null,
+          "prompt_ms": 18.136,
+          "predicted_ms": 1450.073,
+          "predicted_n": 105,
+          "completion_tokens": 105
+        }
+      ]
+    },
+    {
+      "text": "Took a bath",
+      "expected": 1.2,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"Bath = 1.2\", \"co2\": \"1.2kg\"}",
+          "result": {
+            "calc": "Bath = 1.2",
+            "co2": "1.2kg"
+          },
+          "error": null,
+          "prompt_ms": 83.182,
+          "predicted_ms": 1274.475,
+          "predicted_n": 92,
+          "completion_tokens": 92
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"bath = 1.2\", \"co2\": \"1.2kg\"}",
+          "result": {
+            "calc": "bath = 1.2",
+            "co2": "1.2kg"
+          },
+          "error": null,
+          "prompt_ms": 15.561,
+          "predicted_ms": 1383.222,
+          "predicted_n": 99,
+          "completion_tokens": 99
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"bath = 1.2\", \"co2\": \"1.2kg\"}",
+          "result": {
+            "calc": "bath = 1.2",
+            "co2": "1.2kg"
+          },
+          "error": null,
+          "prompt_ms": 15.884,
+          "predicted_ms": 1322.824,
+          "predicted_n": 96,
+          "completion_tokens": 96
+        }
+      ]
+    },
+    {
+      "text": "Streamed music for 5 hours",
+      "expected": 0.025,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"5 h \u00d7 0.005 = 0.025\", \"co2\": \"0.03kg\"}",
+          "result": {
+            "calc": "5 h \u00d7 0.005 = 0.025",
+            "co2": "0.03kg"
+          },
+          "error": null,
+          "prompt_ms": 67.804,
+          "predicted_ms": 4123.208,
+          "predicted_n": 294,
+          "completion_tokens": 294
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"5 h \u00d7 0.005 = 0.025\", \"co2\": \"0.03kg\"}",
+          "result": {
+            "calc": "5 h \u00d7 0.005 = 0.025",
+            "co2": "0.03kg"
+          },
+          "error": null,
+          "prompt_ms": 18.291,
+          "predicted_ms": 448.268,
+          "predicted_n": 33,
+          "completion_tokens": 33
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"5 h \u00d7 0.005 = 0.025\", \"co2\": \"0.03kg\"}",
+          "result": {
+            "calc": "5 h \u00d7 0.005 = 0.025",
+            "co2": "0.03kg"
+          },
+          "error": null,
+          "prompt_ms": 15.956,
+          "predicted_ms": 447.639,
+          "predicted_n": 33,
+          "completion_tokens": 33
+        }
+      ]
+    },
+    {
+      "text": "Bought 10 kg of steel",
+      "expected": 20,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"steel 10 kg \u00d7 2 = 20\", \"co2\": \"20kg\"}",
+          "result": {
+            "calc": "steel 10 kg \u00d7 2 = 20",
+            "co2": "20kg"
+          },
+          "error": null,
+          "prompt_ms": 67.687,
+          "predicted_ms": 1331.045,
+          "predicted_n": 96,
+          "completion_tokens": 96
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"10 kg \u00d7 2 = 20\", \"co2\": \"20kg\"}",
+          "result": {
+            "calc": "10 kg \u00d7 2 = 20",
+            "co2": "20kg"
+          },
+          "error": null,
+          "prompt_ms": 16.266,
+          "predicted_ms": 334.905,
+          "predicted_n": 25,
+          "completion_tokens": 25
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"10 kg \u00d7 2\", \"co2\": \"20kg\"}",
+          "result": {
+            "calc": "10 kg \u00d7 2",
+            "co2": "20kg"
+          },
+          "error": null,
+          "prompt_ms": 15.932,
+          "predicted_ms": 279.922,
+          "predicted_n": 21,
+          "completion_tokens": 21
+        }
+      ]
+    },
+    {
+      "text": "Bought a new electric car",
+      "expected": 12000,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"new electric car = 12000\", \"co2\": \"12000kg\"}",
+          "result": {
+            "calc": "new electric car = 12000",
+            "co2": "12000kg"
+          },
+          "error": null,
+          "prompt_ms": 56.23,
+          "predicted_ms": 380.391,
+          "predicted_n": 28,
+          "completion_tokens": 28
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"new electric car = 12000\", \"co2\": \"12000kg\"}",
+          "result": {
+            "calc": "new electric car = 12000",
+            "co2": "12000kg"
+          },
+          "error": null,
+          "prompt_ms": 15.724,
+          "predicted_ms": 375.517,
+          "predicted_n": 28,
+          "completion_tokens": 28
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"new electric car = 12000\", \"co2\": \"12000kg\"}",
+          "result": {
+            "calc": "new electric car = 12000",
+            "co2": "12000kg"
+          },
+          "error": null,
+          "prompt_ms": 15.819,
+          "predicted_ms": 375.717,
+          "predicted_n": 28,
+          "completion_tokens": 28
+        }
+      ]
+    },
+    {
+      "text": "Threw away 2 kg of mixed waste in landfill",
+      "expected": 1.0,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"2 kg \u00d7 0.5 = 1.0\", \"co2\": \"1.0kg\"}",
+          "result": {
+            "calc": "2 kg \u00d7 0.5 = 1.0",
+            "co2": "1.0kg"
+          },
+          "error": null,
+          "prompt_ms": 92.862,
+          "predicted_ms": 2123.748,
+          "predicted_n": 152,
+          "completion_tokens": 152
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"2 kg \u00d7 0.5 = 1.0\", \"co2\": \"1.0kg\"}",
+          "result": {
+            "calc": "2 kg \u00d7 0.5 = 1.0",
+            "co2": "1.0kg"
+          },
+          "error": null,
+          "prompt_ms": 17.644,
+          "predicted_ms": 1480.786,
+          "predicted_n": 107,
+          "completion_tokens": 107
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"2 kg \u00d7 0.5 = 1\", \"co2\": \"1.0kg\"}",
+          "result": {
+            "calc": "2 kg \u00d7 0.5 = 1",
+            "co2": "1.0kg"
+          },
+          "error": null,
+          "prompt_ms": 18.259,
+          "predicted_ms": 1256.85,
+          "predicted_n": 91,
+          "completion_tokens": 91
+        }
+      ]
+    },
+    {
+      "text": "My diet for a year, average",
+      "expected": 1642.5,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"4.5 kg/day \u00d7 365 days = 1642.5\", \"co2\": \"1600kg\"}",
+          "result": {
+            "calc": "4.5 kg/day \u00d7 365 days = 1642.5",
+            "co2": "1600kg"
+          },
+          "error": null,
+          "prompt_ms": 68.125,
+          "predicted_ms": 6024.496,
+          "predicted_n": 429,
+          "completion_tokens": 429
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"4.5 \u00d7 365 = 1642.5\", \"co2\": \"1600kg\"}",
+          "result": {
+            "calc": "4.5 \u00d7 365 = 1642.5",
+            "co2": "1600kg"
+          },
+          "error": null,
+          "prompt_ms": 17.921,
+          "predicted_ms": 2582.823,
+          "predicted_n": 186,
+          "completion_tokens": 186
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"4.5 \u00d7 365\", \"co2\": \"1600kg\"}",
+          "result": {
+            "calc": "4.5 \u00d7 365",
+            "co2": "1600kg"
+          },
+          "error": null,
+          "prompt_ms": 18.195,
+          "predicted_ms": 1604.582,
+          "predicted_n": 116,
+          "completion_tokens": 116
+        }
+      ]
+    },
+    {
+      "text": "Hello, how are you?",
+      "expected": null,
+      "attempts": [
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 65.716,
+          "predicted_ms": 99.331,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        },
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 15.783,
+          "predicted_ms": 97.898,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        },
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 15.474,
+          "predicted_ms": 96.355,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        }
+      ]
+    },
+    {
+      "text": "What is the capital of France?",
+      "expected": null,
+      "attempts": [
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 65.749,
+          "predicted_ms": 99.252,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        },
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 15.272,
+          "predicted_ms": 96.792,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        },
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 16.101,
+          "predicted_ms": 97.826,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        }
+      ]
+    },
+    {
+      "text": "asdkjalksdj qwoiuqwoiu",
+      "expected": null,
+      "attempts": [
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 91.186,
+          "predicted_ms": 101.269,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        },
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 15.737,
+          "predicted_ms": 96.827,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        },
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 15.401,
+          "predicted_ms": 97.221,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        }
+      ]
+    },
+    {
+      "text": "Tell me a joke",
+      "expected": null,
+      "attempts": [
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 55.779,
+          "predicted_ms": 99.476,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        },
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 15.483,
+          "predicted_ms": 492.928,
+          "predicted_n": 34,
+          "completion_tokens": 34
+        },
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 15.391,
+          "predicted_ms": 96.911,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        }
+      ]
+    },
+    {
+      "text": "Un vol aller-retour de Gen\u00e8ve \u00e0 Lisbonne",
+      "expected": 486.0,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"1500 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 486\", \"co2\": \"490kg\"}",
+          "result": {
+            "calc": "1500 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 486",
+            "co2": "490kg"
+          },
+          "error": null,
+          "prompt_ms": 90.776,
+          "predicted_ms": 6871.554,
+          "predicted_n": 489,
+          "completion_tokens": 489
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"1500 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 486\", \"co2\": \"490kg\"}",
+          "result": {
+            "calc": "1500 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 486",
+            "co2": "490kg"
+          },
+          "error": null,
+          "prompt_ms": 18.517,
+          "predicted_ms": 5241.967,
+          "predicted_n": 373,
+          "completion_tokens": 373
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"1500 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 486\", \"co2\": \"490kg\"}",
+          "result": {
+            "calc": "1500 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 486",
+            "co2": "490kg"
+          },
+          "error": null,
+          "prompt_ms": 18.111,
+          "predicted_ms": 9372.969,
+          "predicted_n": 650,
+          "completion_tokens": 650
+        }
+      ]
+    },
+    {
+      "text": "Ich bin 30 km mit dem Zug in der Schweiz gefahren",
+      "expected": 0.24,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"train in Switzerland 30 km \u00d7 0.008 = 0.24\", \"co2\": \"0.24kg\"}",
+          "result": {
+            "calc": "train in Switzerland 30 km \u00d7 0.008 = 0.24",
+            "co2": "0.24kg"
+          },
+          "error": null,
+          "prompt_ms": 96.457,
+          "predicted_ms": 1883.685,
+          "predicted_n": 132,
+          "completion_tokens": 132
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"30 km \u00d7 0.008 = 0.24\", \"co2\": \"0.2kg\"}",
+          "result": {
+            "calc": "30 km \u00d7 0.008 = 0.24",
+            "co2": "0.2kg"
+          },
+          "error": null,
+          "prompt_ms": 18.482,
+          "predicted_ms": 1793.311,
+          "predicted_n": 126,
+          "completion_tokens": 126
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"train 30 km \u00d7 0.008 = 0.24\", \"co2\": \"0.2kg\"}",
+          "result": {
+            "calc": "train 30 km \u00d7 0.008 = 0.24",
+            "co2": "0.2kg"
+          },
+          "error": null,
+          "prompt_ms": 18.551,
+          "predicted_ms": 7486.656,
+          "predicted_n": 522,
+          "completion_tokens": 522
+        }
+      ]
+    }
+  ]
+}
