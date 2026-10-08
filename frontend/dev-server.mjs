@@ -44,11 +44,13 @@ async function proxyToBackend(req, res) {
     return;
   }
 
-  const responseBody = Buffer.from(await backendRes.arrayBuffer());
   res.writeHead(backendRes.status, {
     'Content-Type': backendRes.headers.get('content-type') ?? 'application/octet-stream',
   });
-  res.end(responseBody);
+  for await (const chunk of backendRes.body) {
+    res.write(chunk);
+  }
+  res.end();
 }
 
 async function serveStatic(req, res) {
