@@ -42,6 +42,29 @@ def test_estimate_stream_emits_reasoning_then_result():
     ]
 
 
+def test_estimate_stream_emits_answer_event():
+    async def fake_stream_estimate(text, llm_url, system_prompt, client):
+        yield ("answer", '{"co2":')
+        yield ("answer", ' "unknown"}')
+        yield ("result", {"co2": "unknown"})
+
+    with patch("app.main.stream_estimate", new=fake_stream_estimate):
+        with client.stream("POST", "/api/estimate/stream", json={"text": "hello"}) as response:
+            lines = list(response.iter_lines())
+
+    assert lines == [
+        "event: answer",
+        'data: "{\\"co2\\":"',
+        "",
+        "event: answer",
+        'data: " \\"unknown\\"}"',
+        "",
+        "event: result",
+        'data: {"co2": "unknown"}',
+        "",
+    ]
+
+
 def test_estimate_stream_saves_history_on_result():
     async def fake_stream_estimate(text, llm_url, system_prompt, client):
         yield ("result", {"calc": "x", "co2": "4.3kg"})

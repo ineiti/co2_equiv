@@ -18,6 +18,9 @@ const loading = document.getElementById('loading');
 const reasoningPanel = document.getElementById('reasoning-panel');
 const reasoningToggle = document.getElementById('reasoning-toggle');
 const reasoningText = document.getElementById('reasoning-text');
+const answerPanel = document.getElementById('answer-panel');
+const answerToggle = document.getElementById('answer-toggle');
+const answerText = document.getElementById('answer-text');
 const result = document.getElementById('result');
 const fetchError = document.getElementById('fetch-error');
 const calcText = document.getElementById('calc-text');
@@ -82,34 +85,40 @@ function showState({
   fetchError.hidden = !showFetchError;
 }
 
-let reasoningCollapsed = false;
-
-function resetReasoningPanel() {
-  reasoningText.textContent = '';
-  reasoningPanel.hidden = true;
-  reasoningPanel.classList.remove('collapsed');
-  reasoningCollapsed = false;
+function makeLivePanel(panel, textEl) {
+  let collapsed = false;
+  return {
+    reset() {
+      textEl.textContent = '';
+      panel.hidden = true;
+      panel.classList.remove('collapsed');
+      collapsed = false;
+    },
+    append(delta) {
+      if (panel.hidden) {
+        panel.hidden = false;
+      }
+      textEl.textContent += delta;
+      textEl.scrollTop = textEl.scrollHeight;
+    },
+    collapse() {
+      if (!panel.hidden && !collapsed) {
+        panel.classList.add('collapsed');
+        collapsed = true;
+      }
+    },
+    toggle() {
+      panel.classList.toggle('collapsed');
+      collapsed = panel.classList.contains('collapsed');
+    },
+  };
 }
 
-function appendReasoning(delta) {
-  if (reasoningPanel.hidden) {
-    reasoningPanel.hidden = false;
-  }
-  reasoningText.textContent += delta;
-  reasoningText.scrollTop = reasoningText.scrollHeight;
-}
+const reasoningLivePanel = makeLivePanel(reasoningPanel, reasoningText);
+const answerLivePanel = makeLivePanel(answerPanel, answerText);
 
-function collapseReasoningPanel() {
-  if (!reasoningPanel.hidden && !reasoningCollapsed) {
-    reasoningPanel.classList.add('collapsed');
-    reasoningCollapsed = true;
-  }
-}
-
-reasoningToggle.addEventListener('click', () => {
-  reasoningPanel.classList.toggle('collapsed');
-  reasoningCollapsed = reasoningPanel.classList.contains('collapsed');
-});
+reasoningToggle.addEventListener('click', () => reasoningLivePanel.toggle());
+answerToggle.addEventListener('click', () => answerLivePanel.toggle());
 
 function renderResult(text, data, save) {
   const kg = parseCo2(data.co2);
@@ -148,7 +157,8 @@ async function runEstimate(text, { save, showReasoning = true }) {
   currentRunController = controller;
 
   showState({ showLoading: true });
-  resetReasoningPanel();
+  reasoningLivePanel.reset();
+  answerLivePanel.reset();
 
   try {
     const response = await fetch('/api/estimate/stream', {
@@ -167,21 +177,29 @@ async function runEstimate(text, { save, showReasoning = true }) {
         reasoning: (delta) => {
           if (!showReasoning) return;
           loading.hidden = true;
-          appendReasoning(delta);
+          reasoningLivePanel.append(delta);
+        },
+        answer: (delta) => {
+          if (!showReasoning) return;
+          loading.hidden = true;
+          answerLivePanel.append(delta);
         },
         restart: () => {
           if (!showReasoning) return;
-          resetReasoningPanel();
+          reasoningLivePanel.reset();
+          answerLivePanel.reset();
           loading.hidden = false;
         },
       },
       controller.signal,
     );
-    collapseReasoningPanel();
+    reasoningLivePanel.collapse();
+    answerLivePanel.collapse();
     renderResult(text, outcome.data, save);
   } catch (err) {
     if (err.name === 'AbortError' || controller.signal.aborted) return;
-    resetReasoningPanel();
+    reasoningLivePanel.reset();
+    answerLivePanel.reset();
     showState({ showFetchError: true });
   }
 }

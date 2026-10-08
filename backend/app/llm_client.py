@@ -86,6 +86,7 @@ async def _stream_once(
             content_delta = delta.get("content")
             if content_delta:
                 content_parts.append(content_delta)
+                yield ("answer", content_delta)
 
     full_content = "".join(content_parts)
     data = json.loads(_strip_think_block(full_content))

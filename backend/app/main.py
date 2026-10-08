@@ -88,6 +88,8 @@ async def estimate_stream(request: EstimateRequest):
             ):
                 if event_type == "reasoning":
                     yield f"event: reasoning\ndata: {json.dumps(data)}\n\n"
+                elif event_type == "answer":
+                    yield f"event: answer\ndata: {json.dumps(data)}\n\n"
                 elif event_type == "restart":
                     yield "event: restart\ndata: null\n\n"
                 elif event_type == "result":

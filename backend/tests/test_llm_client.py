@@ -28,7 +28,7 @@ def _sse_response_no_done(*deltas: dict) -> httpx.Response:
 
 @pytest.mark.asyncio
 @respx.mock
-async def test_stream_estimate_yields_reasoning_then_result():
+async def test_stream_estimate_yields_reasoning_then_answer_then_result():
     respx.post(LLM_URL).mock(
         return_value=_sse_response(
             {"reasoning_content": "Thinking"},
@@ -41,6 +41,7 @@ async def test_stream_estimate_yields_reasoning_then_result():
     assert events == [
         ("reasoning", "Thinking"),
         ("reasoning", " about it"),
+        ("answer", '{"calc": "x", "co2": "4.3kg"}'),
         ("result", {"calc": "x", "co2": "4.3kg"}),
     ]
 
@@ -51,7 +52,28 @@ async def test_stream_estimate_with_no_reasoning_content():
     respx.post(LLM_URL).mock(return_value=_sse_response({"content": '{"co2": "unknown"}'}))
     async with httpx.AsyncClient() as client:
         events = [e async for e in stream_estimate("hello", LLM_URL, "system prompt", client)]
-    assert events == [("result", {"co2": "unknown"})]
+    assert events == [
+        ("answer", '{"co2": "unknown"}'),
+        ("result", {"co2": "unknown"}),
+    ]
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_stream_estimate_yields_answer_deltas_as_they_arrive():
+    respx.post(LLM_URL).mock(
+        return_value=_sse_response(
+            {"content": '{"co2":'},
+            {"content": ' "unknown"}'},
+        )
+    )
+    async with httpx.AsyncClient() as client:
+        events = [e async for e in stream_estimate("hello", LLM_URL, "system prompt", client)]
+    assert events == [
+        ("answer", '{"co2":'),
+        ("answer", ' "unknown"}'),
+        ("result", {"co2": "unknown"}),
+    ]
 
 
 @pytest.mark.asyncio
@@ -66,8 +88,10 @@ async def test_stream_estimate_restarts_on_malformed_then_succeeds():
         events = [e async for e in stream_estimate("hello", LLM_URL, "system prompt", client)]
     assert events == [
         ("reasoning", "oops"),
+        ("answer", "not json"),
         ("restart", None),
         ("reasoning", "retry"),
+        ("answer", '{"co2": "unknown"}'),
         ("result", {"co2": "unknown"}),
     ]
     assert route.call_count == 2
@@ -79,7 +103,7 @@ async def test_stream_estimate_fails_after_retry():
     respx.post(LLM_URL).mock(return_value=_sse_response({"content": "not json"}))
     async with httpx.AsyncClient() as client:
         events = [e async for e in stream_estimate("hello", LLM_URL, "system prompt", client)]
-    assert events[-2] == ("restart", None)
+    assert ("restart", None) in events
     assert events[-1][0] == "error"
 
 

@@ -51,9 +51,17 @@
         <span class="icon">🚆</span>
         <p>Thinking...</p>
       </div>
-      <div id="reasoning-panel" hidden>
-        <button type="button" id="reasoning-toggle">✨ Reasoning (live)</button>
-        <pre id="reasoning-text"></pre>
+      <div id="reasoning-panel" class="live-panel" hidden>
+        <button type="button" id="reasoning-toggle" class="live-panel-toggle">
+          ✨ Reasoning (live)
+        </button>
+        <pre id="reasoning-text" class="live-panel-text"></pre>
+      </div>
+      <div id="answer-panel" class="live-panel" hidden>
+        <button type="button" id="answer-toggle" class="live-panel-toggle">
+          📝 Building answer (live)
+        </button>
+        <pre id="answer-text" class="live-panel-text"></pre>
       </div>
       <div id="result" hidden>
         <p id="calc-text"></p>
