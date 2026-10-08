@@ -20,6 +20,12 @@ main {
   font-size: 0.9rem;
 }
 
+.notice {
+  opacity: 0.8;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
 #estimate-form {
   display: flex;
   gap: 0.5rem;
