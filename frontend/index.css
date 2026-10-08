@@ -63,6 +63,46 @@ main {
   }
 }
 
+#reasoning-panel {
+  margin-top: 1rem;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 4px;
+  overflow: hidden;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.3s ease;
+  max-height: 200px;
+}
+
+#reasoning-panel.collapsed {
+  max-height: 0;
+  opacity: 0;
+  border-width: 0;
+  margin-top: 0;
+}
+
+#reasoning-toggle {
+  width: 100%;
+  text-align: left;
+  background: rgba(128, 128, 128, 0.1);
+  border: none;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+#reasoning-text {
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+  opacity: 0.75;
+  white-space: pre-wrap;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
 #result {
   margin-top: 1rem;
 }
