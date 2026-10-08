@@ -1,6 +1,8 @@
+import asyncio
 import logging
 import os
 import re
+from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 
 import httpx
@@ -8,15 +10,28 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 from app.history import append_history, load_history
-from app.llm_client import EstimateError, get_estimate
+from app.llm_client import EstimateError, get_estimate, warmup_cache
 from app.system_prompt import load_system_prompt
 
-app = FastAPI()
 logger = logging.getLogger(__name__)
 
 LLM_URL = os.environ.get("LLM_URL", "http://llm:8080/v1/chat/completions")
 SYSTEM_PROMPT = load_system_prompt(os.environ.get("SYSTEM_PROMPT_PATH"))
 HISTORY_PATH = os.environ.get("HISTORY_PATH", "/data/fastapi/history.json")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async def _warmup():
+        async with httpx.AsyncClient() as client:
+            await warmup_cache(LLM_URL, SYSTEM_PROMPT, client)
+
+    task = asyncio.create_task(_warmup())
+    yield
+    task.cancel()
+
+
+app = FastAPI(lifespan=lifespan)
 
 # Matches frontend/co2.js's parseCo2: only a recognizable "<number>kg" co2
 # value is worth remembering in history.

@@ -100,3 +100,10 @@ def test_empty_text_returns_422():
 def test_missing_text_returns_422():
     response = client.post("/api/estimate", json={})
     assert response.status_code == 422
+
+
+def test_startup_triggers_llm_cache_warmup():
+    with patch("app.main.warmup_cache", new=AsyncMock()) as mock_warmup:
+        with TestClient(app):
+            pass
+    mock_warmup.assert_called_once()

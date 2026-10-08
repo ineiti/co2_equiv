@@ -74,7 +74,14 @@ from upstream:
   https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF/resolve/main/gemma-4-E4B-it-Q4_0.gguf
   It runs with `--threads` set from LLM_THREADS in .env (default 4);
   set this to the host's logical CPU count (`nproc`) for best
-  throughput on CPU-only hosts.
+  throughput on CPU-only hosts. It also runs with `--parallel 1`
+  (a single inference slot), so every request reuses the one
+  slot's KV cache instead of landing on a different, cold slot;
+  only the first request after an llm restart pays the full cost
+  of processing the multi-thousand-token SYSTEM_PROMPT.md. The
+  backend's `depends_on` waits for llm's healthcheck and restarts
+  whenever llm is recreated, so its startup warms this cache in
+  the background before any real user request arrives.
 
 The frontend and backend containers are labelled for
 watchtower (ghcr.io/nicholas-fedor/watchtower, an actively

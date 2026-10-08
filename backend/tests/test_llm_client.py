@@ -1,8 +1,10 @@
+import json
+
 import httpx
 import pytest
 import respx
 
-from app.llm_client import EstimateError, get_estimate
+from app.llm_client import EstimateError, get_estimate, warmup_cache
 
 LLM_URL = "http://llm:8080/v1/chat/completions"
 
@@ -125,3 +127,56 @@ async def test_null_content_retries_then_raises():
     async with httpx.AsyncClient() as client:
         with pytest.raises(EstimateError):
             await get_estimate("test", LLM_URL, "system prompt", client)
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_warmup_cache_sends_system_prompt_with_minimal_generation():
+    route = respx.post(LLM_URL).mock(
+        return_value=httpx.Response(200, json=_openai_response("anything"))
+    )
+    async with httpx.AsyncClient() as client:
+        await warmup_cache(LLM_URL, "system prompt", client)
+
+    assert route.call_count == 1
+    sent = json.loads(route.calls[0].request.content)
+    assert sent["messages"][0] == {"role": "system", "content": "system prompt"}
+    assert sent["max_tokens"] == 1
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_warmup_cache_retries_until_llm_responds():
+    route = respx.post(LLM_URL)
+    route.side_effect = [
+        httpx.ConnectError("boom"),
+        httpx.Response(200, json=_openai_response("anything")),
+    ]
+    async with httpx.AsyncClient() as client:
+        await warmup_cache(LLM_URL, "system prompt", client, retry_delay=0)
+
+    assert route.call_count == 2
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_warmup_cache_retries_on_5xx_while_model_is_loading():
+    route = respx.post(LLM_URL)
+    route.side_effect = [
+        httpx.Response(503, json={"error": "loading model"}),
+        httpx.Response(200, json=_openai_response("anything")),
+    ]
+    async with httpx.AsyncClient() as client:
+        await warmup_cache(LLM_URL, "system prompt", client, retry_delay=0)
+
+    assert route.call_count == 2
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_warmup_cache_gives_up_after_max_retries():
+    route = respx.post(LLM_URL).mock(side_effect=httpx.ConnectError("boom"))
+    async with httpx.AsyncClient() as client:
+        await warmup_cache(LLM_URL, "system prompt", client, retry_delay=0, max_attempts=3)
+
+    assert route.call_count == 3
