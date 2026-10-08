@@ -8,6 +8,10 @@ Usage:
       --url http://localhost:8080/v1/chat/completions --label gemma --out gemma.json'
 
   devbox run -- bash -c '. $VENV_DIR/bin/activate && python3 scripts/benchmark_models.py \\
+      --url http://localhost:8080/v1/chat/completions --label apertus-cot \\
+      --system-prompt benchmarks/SYSTEM_PROMPT_apertus_cot.md --out apertus-cot.json'
+
+  devbox run -- bash -c '. $VENV_DIR/bin/activate && python3 scripts/benchmark_models.py \\
       --summarize gemma.json apertus.json'
 """
 
@@ -26,7 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "backend"))
 from app.llm_client import _strip_think_block, _validate_shape  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-SYSTEM_PROMPT = (REPO_ROOT / "SYSTEM_PROMPT.md").read_text()
+DEFAULT_SYSTEM_PROMPT_PATH = REPO_ROOT / "SYSTEM_PROMPT.md"
 
 _CO2_PATTERN = re.compile(r"^-?\d+(\.\d+)?kg$")
 
@@ -87,7 +91,32 @@ TEST_CASES = [
 REPEATS = 3
 
 
-def call_once(client: httpx.Client, url: str, text: str) -> dict:
+def extract_json_object(content: str) -> dict:
+    """Parse the model's JSON answer out of `content`. Handles three shapes:
+    1. The whole (stripped) content is the JSON object (today's contract).
+    2. A <think>...</think> block precedes it (handled by _strip_think_block).
+    3. Free-text chain-of-thought precedes it with no tags (the CoT prompt
+       variant) - take the last top-level {...} found at the end of the text.
+    Raises json.JSONDecodeError/ValueError like json.loads would, so callers
+    don't need a separate code path."""
+    stripped = _strip_think_block(content).strip()
+    try:
+        return json.loads(stripped)
+    except json.JSONDecodeError:
+        pass
+    # Free-text CoT precedes the answer: find the last line starting with
+    # '{' and parse from there, so prose mentioning e.g. "0.17" can't be
+    # mistaken for the answer object.
+    last_brace_line = None
+    for line in stripped.splitlines():
+        if line.lstrip().startswith("{"):
+            last_brace_line = line.lstrip()
+    if last_brace_line is None:
+        raise json.JSONDecodeError("no JSON line found", stripped, 0)
+    return json.loads(last_brace_line)
+
+
+def call_once(client: httpx.Client, url: str, text: str, system_prompt: str) -> dict:
     """Returns a dict with raw response data plus the parsed/validated result
     (or an error) so failures can be inspected afterwards, not just counted."""
     record = {
@@ -104,9 +133,10 @@ def call_once(client: httpx.Client, url: str, text: str) -> dict:
             url,
             json={
                 "messages": [
-                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "system", "content": system_prompt},
                     {"role": "user", "content": text},
                 ],
+                "max_tokens": 400,
             },
             timeout=180.0,
         )
@@ -122,7 +152,7 @@ def call_once(client: httpx.Client, url: str, text: str) -> dict:
         record["raw_content"] = content
         if not isinstance(content, str):
             raise ValueError(f"expected string content, got: {content!r}")
-        data = json.loads(_strip_think_block(content))
+        data = extract_json_object(content)
         record["result"] = _validate_shape(data)
     except Exception as exc:  # noqa: BLE001
         record["error"] = str(exc)
@@ -155,23 +185,28 @@ def score_case(result: dict | None, expected: float | None, tolerance: float | N
     return "correct" if ok else "wrong_value"
 
 
-def warmup(client: httpx.Client, url: str) -> float:
+def warmup(client: httpx.Client, url: str, system_prompt: str) -> float:
     start = time.monotonic()
-    call_once(client, url, "warmup")
+    call_once(client, url, "warmup", system_prompt)
     return time.monotonic() - start
 
 
 def run(args):
+    system_prompt_path = (
+        Path(args.system_prompt).resolve() if args.system_prompt else DEFAULT_SYSTEM_PROMPT_PATH
+    )
+    system_prompt = system_prompt_path.read_text()
+
     results = []
     with httpx.Client() as client:
         print(f"[{args.label}] warming up...", file=sys.stderr)
-        cold_s = warmup(client, args.url)
+        cold_s = warmup(client, args.url, system_prompt)
         print(f"[{args.label}] cold request took {cold_s:.1f}s", file=sys.stderr)
 
         for text, expected, tolerance in TEST_CASES:
             attempts = []
             for rep in range(REPEATS):
-                record = call_once(client, args.url, text)
+                record = call_once(client, args.url, text, system_prompt)
                 outcome = (
                     score_case(record["result"], expected, tolerance)
                     if record["error"] is None
@@ -189,7 +224,12 @@ def run(args):
                 )
             results.append({"text": text, "expected": expected, "attempts": attempts})
 
-    out_data = {"label": args.label, "cold_s": cold_s, "cases": results}
+    out_data = {
+        "label": args.label,
+        "system_prompt_path": str(system_prompt_path.relative_to(REPO_ROOT)),
+        "cold_s": cold_s,
+        "cases": results,
+    }
     if args.out:
         Path(args.out).write_text(json.dumps(out_data, indent=2))
         print(f"wrote {args.out}", file=sys.stderr)
@@ -216,6 +256,8 @@ def summarize(paths: list[str]):
             if sum(1 for a in case["attempts"] if a["outcome"] in ("correct", "correct_unknown")) >= 2
         )
         print(f"=== {label} ===")
+        if data.get("system_prompt_path"):
+            print(f"  system prompt: {data['system_prompt_path']}")
         print(f"  cold request: {data['cold_s']:.1f}s")
         print(f"  n={n} (cases={len(data['cases'])} x {REPEATS} reps)")
         for k in ["correct", "wrong_value", "correct_unknown", "wrong_unknown", "shape_fail", "error"]:
@@ -233,6 +275,11 @@ def main():
     parser.add_argument("--url", help="llama-server /v1/chat/completions URL")
     parser.add_argument("--label", help="label for this model in the report")
     parser.add_argument("--out", default=None, help="write JSON results to this path")
+    parser.add_argument(
+        "--system-prompt",
+        default=None,
+        help="path to a system prompt file to use instead of SYSTEM_PROMPT.md",
+    )
     parser.add_argument(
         "--summarize",
         nargs="+",

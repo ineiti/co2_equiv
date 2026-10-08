@@ -1,0 +1,1330 @@
+{
+  "label": "apertus-cot",
+  "system_prompt_path": "benchmarks/SYSTEM_PROMPT_apertus_cot.md",
+  "cold_s": 2.689422499999637,
+  "cases": [
+    {
+      "text": "Flight from London to Paris",
+      "expected": 91.80000000000001,
+      "attempts": [
+        {
+          "outcome": "shape_fail",
+          "raw_content": "## Step 1: Ingredients\n- **Flight**: 1 passenger\n- **Distance**: 340 km (London to Paris)\n\n## Step 2: Factor\n- **Distance**: 340 km >= 500 km -> **economy flight factor**: 0.15 per passenger-km\n\n## Step 3: Calculation\n- **Flight**: 1 passenger \u00d7 340 km \u00d7 0.15 = 51 kg CO2e\n\n{\"calc\": \"flight 340 km \u00d7 1 \u00d7 0.15 = 51\", \"co2\": \"51\"}",
+          "result": {
+            "calc": "flight 340 km \u00d7 1 \u00d7 0.15 = 51",
+            "co2": "51"
+          },
+          "error": null,
+          "prompt_ms": 61.937,
+          "predicted_ms": 2309.82,
+          "predicted_n": 139,
+          "completion_tokens": 139
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "1. Ingredients: return flight London-Paris, 340 km one way\n2. Factor: distance 340 km >= 500 km -> economy flight factor 0.15/passenger-km\n3. Calculation: 340 \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 103.68\n{\"calc\": \"340 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 103.68\", \"co2\": \"100kg\"}",
+          "result": {
+            "calc": "340 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 103.68",
+            "co2": "100kg"
+          },
+          "error": null,
+          "prompt_ms": 19.123,
+          "predicted_ms": 2099.139,
+          "predicted_n": 126,
+          "completion_tokens": 126
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "### Step-by-step calculation\n\n1. **Ingredients**: \n   - Flight: London to Paris one-way (200 km)\n2. **Factor**: \n   - Distance 200 km >= 500 km -> economy flight factor 0.15 per passenger-km\n3. **Calculation**: \n   - 200 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 72 kg CO2e\n\n### JSON output\n{\"calc\": \"200 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 72\", \"co2\": \"72kg\"}",
+          "result": {
+            "calc": "200 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 72",
+            "co2": "72kg"
+          },
+          "error": null,
+          "prompt_ms": 19.003,
+          "predicted_ms": 2392.557,
+          "predicted_n": 144,
+          "completion_tokens": 144
+        }
+      ]
+    },
+    {
+      "text": "Return flight from Frankfurt to Singapore",
+      "expected": 3337.2,
+      "attempts": [
+        {
+          "outcome": "wrong_value",
+          "raw_content": "Ingredients: return flight Frankfurt-Singapore, 9600 km\nFactor: distance 9600 km >= 500 km -> economy flight factor 1.08/passenger-km\nCalculation: 9600 \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 374.4\n{\"calc\": \"9600 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 374\", \"co2\": \"370kg\"}",
+          "result": {
+            "calc": "9600 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 374",
+            "co2": "370kg"
+          },
+          "error": null,
+          "prompt_ms": 58.222,
+          "predicted_ms": 1962.793,
+          "predicted_n": 119,
+          "completion_tokens": 119
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "Ingredients: return flight Frankfurt-Singapore, 9600 km\nFactor: distance 9600 km >= 500 km -> premium economy factor x2.9\nCalculation: 9600 \u00d7 2 \u00d7 1.26 (since great-circle distance) \u00d7 1.26 = 34388.48\nRound to 2 significant figures: 34400\n{\"calc\": \"9600 km \u00d7 2 \u00d7 1.26 \u00d7 1.26 = 34400\", \"co2\": \"34400kg\"}",
+          "result": {
+            "calc": "9600 km \u00d7 2 \u00d7 1.26 \u00d7 1.26 = 34400",
+            "co2": "34400kg"
+          },
+          "error": null,
+          "prompt_ms": 18.742,
+          "predicted_ms": 2346.975,
+          "predicted_n": 140,
+          "completion_tokens": 140
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: return flight Frankfurt-Singapore, 9600 km\nFactor: distance 9600 km >= 500 km -> premium economy factor 1.6/passenger-km\nCalculation: 9600 \u00d7 2 \u00d7 1.08 \u00d7 1.6 = 3952.672\n{\"calc\": \"9600 km \u00d7 2 \u00d7 1.08 \u00d7 1.6 = 3953\", \"co2\": \"3950kg\"}",
+          "result": {
+            "calc": "9600 km \u00d7 2 \u00d7 1.08 \u00d7 1.6 = 3953",
+            "co2": "3950kg"
+          },
+          "error": null,
+          "prompt_ms": 18.993,
+          "predicted_ms": 2030.371,
+          "predicted_n": 121,
+          "completion_tokens": 121
+        }
+      ]
+    },
+    {
+      "text": "Flight from Zurich to Dubai in business class",
+      "expected": 2255.04,
+      "attempts": [
+        {
+          "outcome": "shape_fail",
+          "raw_content": "# Step-by-step breakdown\n\n1. **Ingredients**: Flight from Zurich to Dubai (business class)\n   - Distance: 4800 km (round trip)\n   - Passenger: 1\n   - Class: Business (factor x2.9)\n\n2. **Factor**: \n   - Distance \u2265 500 km: Economy = 0.15, Premium economy = x1.6, Business = x2.9\n   - Class: Business = x2.9\n\n3. **Calculation**:\n   - Distance: 4800 km\n   - Passenger: 1\n   - Class: x2.9\n   - Factor: 4800 \u00d7 1 \u00d7 2.9 = 14016\n\n# Final calculation\n{\"calc\": \"4800 km \u00d7 1 \u00d7 2.9 = 14016\", \"co2\": \"14016kg CO2e\"}",
+          "result": {
+            "calc": "4800 km \u00d7 1 \u00d7 2.9 = 14016",
+            "co2": "14016kg CO2e"
+          },
+          "error": null,
+          "prompt_ms": 78.639,
+          "predicted_ms": 3476.723,
+          "predicted_n": 207,
+          "completion_tokens": 207
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "### Step-by-step breakdown:\n\n1. **Ingredients**:  \n   - Flight: Zurich to Dubai (return journey)\n   - Distance: 4800 km (round trip)  \n   - Class: Business\n\n2. **Factor**:  \n   - Business class: factor x1.6 (use for economy-class factor and multiply)  \n   - Distance: 4800 km  \n\n3. **Calculation**:  \n   - Multiply:  \n     - Distance 4800 km \u00d7 1.6 (business class multiplier) \u00d7 0.15 (economy-class factor)  \n     - Arithmetic: `4800 \u00d7 1.6 \u00d7 0.15 = 1088`  \n\n### JSON Output:  \n```json\n{\"calc\": \"4800 km \u00d7 1.6 \u00d7 0.15 = 1088\", \"co2\": \"1088kg\"}\n```",
+          "result": {
+            "calc": "4800 km \u00d7 1.6 \u00d7 0.15 = 1088",
+            "co2": "1088kg"
+          },
+          "error": null,
+          "prompt_ms": 19.129,
+          "predicted_ms": 3571.142,
+          "predicted_n": 214,
+          "completion_tokens": 214
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "Ingredients: return flight Zurich-Dubai, 4800 km one way\nFactor: distance 4800 km >= 500 km -> business class factor x4\nCalculation: 4800 \u00d7 2 \u00d7 1.25 \u00d7 0.15 = 262.5\n{\"calc\": \"4800 km \u00d7 2 \u00d7 1.25 \u00d7 0.15 = 262.5\", \"co2\": \"260kg\"}",
+          "result": {
+            "calc": "4800 km \u00d7 2 \u00d7 1.25 \u00d7 0.15 = 262.5",
+            "co2": "260kg"
+          },
+          "error": null,
+          "prompt_ms": 19.059,
+          "predicted_ms": 1881.851,
+          "predicted_n": 114,
+          "completion_tokens": 114
+        }
+      ]
+    },
+    {
+      "text": "Took the train 120 km in Switzerland",
+      "expected": 0.96,
+      "attempts": [
+        {
+          "outcome": "wrong_value",
+          "raw_content": "1. Ingredients:\n   - train travel, 120 km\n2. Factor: train Europe average = 0.035/km\n3. Calculation: 120 \u00d7 0.035 = 4.2\n{\"calc\": \"train 120 km \u00d7 0.035 = 4.2\", \"co2\": \"4.2kg\"}",
+          "result": {
+            "calc": "train 120 km \u00d7 0.035 = 4.2",
+            "co2": "4.2kg"
+          },
+          "error": null,
+          "prompt_ms": 81.004,
+          "predicted_ms": 1442.932,
+          "predicted_n": 88,
+          "completion_tokens": 88
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "1. Ingredients: train trip, 120 km\n2. Factor: train Europe average = 0.035/km\n3. Calculation: 120 \u00d7 0.035 = 4.2\n{\"calc\": \"train 120 km \u00d7 0.035 = 4.2\", \"co2\": \"4.2kg\"}",
+          "result": {
+            "calc": "train 120 km \u00d7 0.035 = 4.2",
+            "co2": "4.2kg"
+          },
+          "error": null,
+          "prompt_ms": 17.628,
+          "predicted_ms": 1406.68,
+          "predicted_n": 86,
+          "completion_tokens": 86
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "1. Ingredients: train trip, 120 km\n2. Factor: train Europe average = 0.035/km\n3. Calculation: 120 \u00d7 0.035 = 4.2\n{\"calc\": \"train 120 km \u00d7 0.035 = 4.2\", \"co2\": \"4.2kg\"}",
+          "result": {
+            "calc": "train 120 km \u00d7 0.035 = 4.2",
+            "co2": "4.2kg"
+          },
+          "error": null,
+          "prompt_ms": 17.743,
+          "predicted_ms": 1408.024,
+          "predicted_n": 86,
+          "completion_tokens": 86
+        }
+      ]
+    },
+    {
+      "text": "Drove an electric car 60 km in France",
+      "expected": 1.2,
+      "attempts": [
+        {
+          "outcome": "error",
+          "raw_content": "### Step-by-step:\n\n1. **Ingredients**: Electric car trip (60 km)\n   - Distance: 60 km\n   - Unit: Distance (km)\n\n2. **Factor**: Electric car = 0.05/km (from REFERENCE VALUES)\n\n3. **Calculation**: Multiply 60 km by the factor: 60 \u00d7 0.05 = 3\n\n### Final Calculation\n\n- \"60 km \u00d7 0.05 = 3\"\n- \"co2\": \"3kg\"",
+          "result": null,
+          "error": "no JSON line found: line 1 column 1 (char 0)",
+          "prompt_ms": 81.395,
+          "predicted_ms": 1899.176,
+          "predicted_n": 115,
+          "completion_tokens": 115
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "# Step-by-step reasoning\n\n1. **Ingredients**: car trip (electric), 60 km\n   - Quantity: 60 km (distance)\n   - Default unit: km (distance)\n\n2. **Factor**: electric car = 0.05/km (from reference values)\n   - This factor is for electric cars using the European grid (France's electricity factor is 0.06 but we'll use the higher European average here for simplicity).\n\n3. **Calculation**: 60 km \u00d7 0.05 = 3\n   - Arithmetic: 60 km \u00d7 0.05\n   - Final calculation: 3 kg CO2e\n\n{\"calc\": \"60 km \u00d7 0.05 = 3\", \"co2\": \"3kg\"}",
+          "result": {
+            "calc": "60 km \u00d7 0.05 = 3",
+            "co2": "3kg"
+          },
+          "error": null,
+          "prompt_ms": 19.094,
+          "predicted_ms": 2873.805,
+          "predicted_n": 169,
+          "completion_tokens": 169
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "1. Ingredients: electric car trip, 60 km\n2. Factor: electric car = 0.05/km (France electricity 0.10 kg/kWh)\n3. Calculation: 60 \u00d7 0.05 = 3\n{\"calc\": \"electric car 60 km \u00d7 0.05 = 3\", \"co2\": \"3kg\"}",
+          "result": {
+            "calc": "electric car 60 km \u00d7 0.05 = 3",
+            "co2": "3kg"
+          },
+          "error": null,
+          "prompt_ms": 19.168,
+          "predicted_ms": 1436.116,
+          "predicted_n": 86,
+          "completion_tokens": 86
+        }
+      ]
+    },
+    {
+      "text": "Took the bus instead of driving 15 km",
+      "expected": -1.0500000000000003,
+      "attempts": [
+        {
+          "outcome": "wrong_value",
+          "raw_content": "Ingredients: car trip, 15 km\nFactor: car = 0.17/km\nCalculation: 15 \u00d7 0.17 = 2.55\n{\"calc\": \"car 15 km \u00d7 0.17 = 2.55\", \"co2\": \"2.6kg\"}",
+          "result": {
+            "calc": "car 15 km \u00d7 0.17 = 2.55",
+            "co2": "2.6kg"
+          },
+          "error": null,
+          "prompt_ms": 81.263,
+          "predicted_ms": 1203.969,
+          "predicted_n": 73,
+          "completion_tokens": 73
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "1. Ingredients:\n   - car trip: 15 km\n2. Factor: petrol car = 0.17/km\n3. Calculation: 15 \u00d7 0.17 = 2.55\n{\"calc\": \"car trip 15 km \u00d7 0.17 = 2.55\", \"co2\": \"2.6kg\"}",
+          "result": {
+            "calc": "car trip 15 km \u00d7 0.17 = 2.55",
+            "co2": "2.6kg"
+          },
+          "error": null,
+          "prompt_ms": 17.845,
+          "predicted_ms": 1375.822,
+          "predicted_n": 84,
+          "completion_tokens": 84
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "1. Ingredients:\n   - bus trip, 15 km\n\n2. Factor: bus Europe average = 0.10 per passenger-km\n\n3. Calculation: 15 \u00d7 0.10 = 1.5\n{\"calc\": \"bus 15 km \u00d7 0.10 = 1.5\", \"co2\": \"1.5kg\"}",
+          "result": {
+            "calc": "bus 15 km \u00d7 0.10 = 1.5",
+            "co2": "1.5kg"
+          },
+          "error": null,
+          "prompt_ms": 17.776,
+          "predicted_ms": 1459.439,
+          "predicted_n": 85,
+          "completion_tokens": 85
+        }
+      ]
+    },
+    {
+      "text": "Biked 8 km instead of taking a taxi",
+      "expected": -1.36,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "1. **Ingredients**: car trip (no distance given), bike trip (8 km)\n2. **Factor**: car trip (petrol car) = 0.17/km\n3. **Calculation**: bike = 8 \u00d7 0.005 = 0.04 (factor for electric bike in Europe)\n           car = 8 \u00d7 0.17 = 1.36\n           0.04 - 1.36 = -1.32\n{\"calc\": \"car 8 km \u00d7 0.17 = 1.36; bike = 8 \u00d7 0.005 = 0.04; -1.32\", \"co2\": \"-1.32kg\"}",
+          "result": {
+            "calc": "car 8 km \u00d7 0.17 = 1.36; bike = 8 \u00d7 0.005 = 0.04; -1.32",
+            "co2": "-1.32kg"
+          },
+          "error": null,
+          "prompt_ms": 84.203,
+          "predicted_ms": 2748.351,
+          "predicted_n": 163,
+          "completion_tokens": 163
+        },
+        {
+          "outcome": "shape_fail",
+          "raw_content": "### Step-by-Step Reasoning\n\n1. **Ingredients**:\n   - Biking: distance 8 km\n   - Taxi: not specified, but typically petrol (0.17/km)\n\n2. **Factor**:\n   - Biking: 0 (no emissions per km)\n   - Taxi: petrol car = 0.17/km\n\n3. **Calculation**:\n   - Biking: 8 km \u00d7 0 = 0 kg CO2e\n   - Taxi: 8 km \u00d7 0.17 = 1.36 kg CO2e\n\n### Final Calculation\n- Biking: 0 kg CO2e\n- Taxi: 1.36 kg CO2e\n\n### JSON Output\n{\"calc\": \"8 km \u00d7 0 (biking) vs 8 km \u00d7 0.17 (petrol car taxi)\", \"co2\": \"0kg vs 1.36kg\"}",
+          "result": {
+            "calc": "8 km \u00d7 0 (biking) vs 8 km \u00d7 0.17 (petrol car taxi)",
+            "co2": "0kg vs 1.36kg"
+          },
+          "error": null,
+          "prompt_ms": 18.288,
+          "predicted_ms": 3369.117,
+          "predicted_n": 203,
+          "completion_tokens": 203
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "# Step-by-step Solution\n\n1. **Ingredients**: \n   - Biking: 8 km\n   - Taxi: Need to find the taxi factor first.\n\n2. **Factor**: \n   - For taxi: urban taxi (not given, so using average). Reference: urban taxi = 0.17 per km.\n   - Biking: 0 km (distance not needed).\n\n3. **Calculation**:\n   - Taxi: 8 km \u00d7 0.17/km = 1.36\n   - Biking: 8 km \u00d7 0 (distance does not affect) = 0\n   - Savings: 1.36 - 0 = 1.36\n\n# Final JSON output\n\n{\"calc\": \"8 km \u00d7 0.17 = 1.36 (savings)\", \"co2\": \"-1.36kg\"}",
+          "result": {
+            "calc": "8 km \u00d7 0.17 = 1.36 (savings)",
+            "co2": "-1.36kg"
+          },
+          "error": null,
+          "prompt_ms": 18.451,
+          "predicted_ms": 3434.129,
+          "predicted_n": 192,
+          "completion_tokens": 192
+        }
+      ]
+    },
+    {
+      "text": "Planted a tree",
+      "expected": -20,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "To calculate the carbon footprint from planting a tree, we need to consider the following steps:\n\n### Step-by-step explanation:\n\n1. **Ingredient**: Tree planting. We will assume 1 tree is planted, as the question did not specify the number of trees.\n2. **Factor**: Trees absorb CO2 over their lifetime. A typical tree absorbs approximately 20 kg of CO2 per year. Since this is over 1 year, we use the annual uptake.\n3. **Calculation**: Multiply 1 tree by the annual uptake of 20 kg CO2e per year.\n\n### Calculation:\n- 1 tree \u00d7 20 kg CO2e/year = 20 kg CO2e (rounded to 2 significant figures)\n\n### Final Output:\n{\"calc\": \"1 tree \u00d7 20 kg CO2e/year = 20 kg\", \"co2\": \"-20kg\"}",
+          "result": {
+            "calc": "1 tree \u00d7 20 kg CO2e/year = 20 kg",
+            "co2": "-20kg"
+          },
+          "error": null,
+          "prompt_ms": 46.705,
+          "predicted_ms": 3542.976,
+          "predicted_n": 191,
+          "completion_tokens": 191
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"tree -20kg for one year\", \"co2\": \"-20kg\"}",
+          "result": {
+            "calc": "tree -20kg for one year",
+            "co2": "-20kg"
+          },
+          "error": null,
+          "prompt_ms": 19.292,
+          "predicted_ms": 380.249,
+          "predicted_n": 23,
+          "completion_tokens": 23
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: planting a tree, 1 tree (1 year uptake)\nFactor: tree (see reference values), one year\nCalculation: -20 (since it's one year)\n{\"calc\": \"tree = -20\", \"co2\": \"-20kg\"}",
+          "result": {
+            "calc": "tree = -20",
+            "co2": "-20kg"
+          },
+          "error": null,
+          "prompt_ms": 18.345,
+          "predicted_ms": 981.668,
+          "predicted_n": 58,
+          "completion_tokens": 58
+        }
+      ]
+    },
+    {
+      "text": "Planted 3 trees two years ago",
+      "expected": -120,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "{\"calc\": \"3 trees \u00d7 -20 (per tree per year) \u00d7 2 = -120\", \"co2\": \"-120kg\"}",
+          "result": {
+            "calc": "3 trees \u00d7 -20 (per tree per year) \u00d7 2 = -120",
+            "co2": "-120kg"
+          },
+          "error": null,
+          "prompt_ms": 59.987,
+          "predicted_ms": 622.107,
+          "predicted_n": 36,
+          "completion_tokens": 36
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "{\"calc\": \"-3 \u00d7 20 = -60\", \"co2\": \"-60kg\"}",
+          "result": {
+            "calc": "-3 \u00d7 20 = -60",
+            "co2": "-60kg"
+          },
+          "error": null,
+          "prompt_ms": 18.643,
+          "predicted_ms": 417.937,
+          "predicted_n": 24,
+          "completion_tokens": 24
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "Ingredients: 3 trees, uptake for one year each, two years total\nFactor: tree uptake = -20 per year, so 3 \u00d7 -20 = -60\nCalculation: -60\n{\"calc\": \"3 trees \u00d7 -20 = -60\", \"co2\": \"-60kg\"}",
+          "result": {
+            "calc": "3 trees \u00d7 -20 = -60",
+            "co2": "-60kg"
+          },
+          "error": null,
+          "prompt_ms": 18.327,
+          "predicted_ms": 1258.263,
+          "predicted_n": 71,
+          "completion_tokens": 71
+        }
+      ]
+    },
+    {
+      "text": "A cappuccino and a croissant for breakfast",
+      "expected": 1.0,
+      "attempts": [
+        {
+          "outcome": "wrong_value",
+          "raw_content": "1. Ingredients: cappuccino, 1 serving  \n2. Factor: cappuccino = 0.2 per serving  \n3. Calculation: 1 \u00d7 0.2 = 0.2  \n{\"calc\": \"cappuccino 1 = 0.2\", \"co2\": \"0.2kg\"}",
+          "result": {
+            "calc": "cappuccino 1 = 0.2",
+            "co2": "0.2kg"
+          },
+          "error": null,
+          "prompt_ms": 82.511,
+          "predicted_ms": 1351.063,
+          "predicted_n": 79,
+          "completion_tokens": 79
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: cappuccino, 1 cup; croissant, 1 item\nFactor: cappuccino = 0.02 per cup (from drinks), croissant = 1.2 per unit (from food)\nCalculation: cappuccino 1 \u00d7 0.02 = 0.02; croissant 1 \u00d7 1.2 = 1.2; 0.02 + 1.2 = 1.22\n{\"calc\": \"cappuccino 1 \u00d7 0.02 = 0.02; croissant 1 \u00d7 1.2 = 1.2; 0.02 + 1.2 = 1.22\", \"co2\": \"1.2kg\"}",
+          "result": {
+            "calc": "cappuccino 1 \u00d7 0.02 = 0.02; croissant 1 \u00d7 1.2 = 1.2; 0.02 + 1.2 = 1.22",
+            "co2": "1.2kg"
+          },
+          "error": null,
+          "prompt_ms": 18.509,
+          "predicted_ms": 2937.404,
+          "predicted_n": 170,
+          "completion_tokens": 170
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "1. Ingredients:\n   - cappuccino: 1 cup\n   - croissant: 1 serving\n\n2. Factor:\n   - cappuccino: coffee beans (28 kg CO2e per kg) = 28\n   - croissant: wheat flour (1.0 kg CO2e per kg) = 1.0\n\n3. Calculation:\n   - cappuccino: 1 \u00d7 28 = 28\n   - croissant: 1 \u00d7 1.0 = 1.0\n   - total: 28 + 1.0 = 29\n\n{\"calc\": \"cappuccino 1 cup \u00d7 28kg = 28; croissant 1 serving \u00d7 1.0kg = 1.0; total 29\", \"co2\": \"29kg\"}",
+          "result": {
+            "calc": "cappuccino 1 cup \u00d7 28kg = 28; croissant 1 serving \u00d7 1.0kg = 1.0; total 29",
+            "co2": "29kg"
+          },
+          "error": null,
+          "prompt_ms": 19.732,
+          "predicted_ms": 3268.848,
+          "predicted_n": 189,
+          "completion_tokens": 189
+        }
+      ]
+    },
+    {
+      "text": "Bought a smartphone and a pair of jeans",
+      "expected": 95,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "# INPUT\nItem: smartphone\nActivity: purchased\n# OUTPUT FORMAT\n{\"calc\": \"purchased smartphone = 70 \u00d7 1 = 70\", \"co2\": \"70kg\"}",
+          "result": {
+            "calc": "purchased smartphone = 70 \u00d7 1 = 70",
+            "co2": "70kg"
+          },
+          "error": null,
+          "prompt_ms": 79.969,
+          "predicted_ms": 776.699,
+          "predicted_n": 46,
+          "completion_tokens": 46
+        },
+        {
+          "outcome": "shape_fail",
+          "raw_content": "# OUTPUT FORMAT (STRICT)\n\nFirst, think step-by-step in plain text (max 4 short lines):\n\n1. Ingredients: list every item/activity identified, each with its quantity and unit (distance, weight, duration, count, or kWh). Use DEFAULT ASSUMPTIONS for anything unstated.\n2. Factor: for each item, name the matching REFERENCE VALUES factor and its number.\n3. Calculation: multiply each quantity by its factor; show the arithmetic; sum if there are multiple items.\n\nThen, on its own final line, with nothing after it, output exactly one line of JSON:\n\n{\"calc\": \"<calc>\", \"co2\": \"<number>kg\"}\n\n<calc>: short restatement of the final arithmetic, e.g. \"25 km \u00d7 0.17\". Ignored by the backend.\n\n<number>:\n\n- Plain decimal, dot separator, no thousands separators, no scientific notation, no spaces.\n- Always kilograms, even for large values (\"2000kg\", never \"2t\").\n- Round to 2 significant figures: 4.25 -> \"4.3kg\", 1685 -> \"1700kg\", 0.0723 -> \"0.072kg\".\n- Negative for savings or removals, e.g. \"-6.8kg\".\n- Not an item/activity (greeting, unrelated question, gibberish): skip steps 1-3 and output only {\"co2\": \"unknown\"}.\n\nDo not put the JSON inside the step-by-step text. Do not repeat the JSON. Do not add any text after the JSON line.\n\n# HOW TO ESTIMATE\n\n1. Identify every item or activity described.\n2. Determine quantity (distance, weight, duration, count, energy); if unstated, use DEFAULT ASSUMPTIONS.\n3. Pick",
+          "result": {
+            "calc": "<calc>",
+            "co2": "<number>kg"
+          },
+          "error": null,
+          "prompt_ms": 18.2,
+          "predicted_ms": 7034.588,
+          "predicted_n": 400,
+          "completion_tokens": 400
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "1. Ingredients: smartphone (1 new unit), jeans (1 new unit)\n   - smartphone: manufacturing + delivery of one new unit, DEFAULT ASSUMPTIONS for this\n   - jeans: manufacturing + delivery of one new unit, DEFAULT ASSUMPTIONS for this\n2. Factor: smartphone = 70 kg CO2e/unit, jeans = 25 kg CO2e/unit\n3. Calculation: smartphone 1 \u00d7 70 + jeans 1 \u00d7 25 = 95\n{\"calc\": \"70 kg CO2e/smartphone + 25 kg CO2e/jeans = 95\", \"co2\": \"95kg\"}",
+          "result": {
+            "calc": "70 kg CO2e/smartphone + 25 kg CO2e/jeans = 95",
+            "co2": "95kg"
+          },
+          "error": null,
+          "prompt_ms": 19.864,
+          "predicted_ms": 2654.625,
+          "predicted_n": 153,
+          "completion_tokens": 153
+        }
+      ]
+    },
+    {
+      "text": "Showering for 10 minutes every day for a week",
+      "expected": 3.5,
+      "attempts": [
+        {
+          "outcome": "wrong_value",
+          "raw_content": "# Step-by-Step:\n\n1. **Ingredients**:\n   - shower: 8 minutes (default, since duration unstated)\n   - per use: 1 (one shower per day)\n   - water: 150 liters (standard hot water for a shower)\n   - electricity: 6.6 kWh (Germany's grid at 0.25 kg/kWh)\n   - gas: 0.18 kg (if gas heater used)\n\n2. **Factor**:\n   - water: 1 kg per 1000 liters (standard for hot water)\n   - electricity: Germany 0.25 kg/kWh\n   - gas: 0.18 kg per kWh (natural gas for heating)\n\n3. **Calculation**:\n   - shower: 8 \u00d7 1 \u00d7 1 = 8\n   - water: 150 \u00d7 1 = 150\n   - electricity: 6.6 \u00d7 0.25 = 1.65\n   - gas: 0 (assuming electric shower)\n   - sum: 8 + 150 + 1.65 + 0 = 169.65\n\n# Final Calculation\n\n{\"calc\": \"8 min shower \u00d7 1 \u00d7 1 + 150 l water + 6.6 kWh electricity = 169.65\", \"co2\": \"170kg\"}",
+          "result": {
+            "calc": "8 min shower \u00d7 1 \u00d7 1 + 150 l water + 6.6 kWh electricity = 169.65",
+            "co2": "170kg"
+          },
+          "error": null,
+          "prompt_ms": 84.94,
+          "predicted_ms": 5418.484,
+          "predicted_n": 309,
+          "completion_tokens": 309
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "1. Ingredients:\n   - showering: 10 minutes/day\n   - duration: 7 days\n\n2. Factor:\n   - shower: 0.4 kg CO2e per 8 minutes (from REFERENCE VALUES)\n   - default unit: minutes\n\n3. Calculation:\n   - 10 minutes \u00d7 0.4/kg \u00d7 7 = 2.8 kg CO2e\n\n{\"calc\": \"10 minutes \u00d7 0.4/kg \u00d7 7 = 2.8\", \"co2\": \"2.8kg\"}",
+          "result": {
+            "calc": "10 minutes \u00d7 0.4/kg \u00d7 7 = 2.8",
+            "co2": "2.8kg"
+          },
+          "error": null,
+          "prompt_ms": 19.048,
+          "predicted_ms": 2069.334,
+          "predicted_n": 121,
+          "completion_tokens": 121
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "1. Ingredients: shower, 10 minutes \u00d7 7 days\n   - Quantity: 10 minutes \u00d7 7 = 70 minutes\n   - Unit: minutes\n2. Factor: shower = 0.04 per minute\n3. Calculation: 70 \u00d7 0.04 = 2.8\n{\"calc\": \"70 minutes \u00d7 0.04 = 2.8\", \"co2\": \"2.8kg\"}",
+          "result": {
+            "calc": "70 minutes \u00d7 0.04 = 2.8",
+            "co2": "2.8kg"
+          },
+          "error": null,
+          "prompt_ms": 19.59,
+          "predicted_ms": 1750.177,
+          "predicted_n": 103,
+          "completion_tokens": 103
+        }
+      ]
+    },
+    {
+      "text": "Commuting 10 km by car every day for a month (22 workdays)",
+      "expected": 37.400000000000006,
+      "attempts": [
+        {
+          "outcome": "wrong_value",
+          "raw_content": "# HOW TO ESTIMATE\n\n1. **Ingredients**: Ingredient is the car trip.\n   - Quantity: 10 km (one way, so multiply by 2: 20 km).\n   - Unit: distance in km.\n\n2. **Factor**: Petrol car = 0.17/km.\n\n3. **Calculation**: \n   - 20 km \u00d7 0.17 = 3.4\n   - Since the question asked for a month (22 days), multiply by 22:\n     3.4 \u00d7 22 = 74.8\n\n# FINAL ANSWER\n{\"calc\": \"20 km \u00d7 0.17 = 3.4; 3.4 \u00d7 22 = 74.8\", \"co2\": \"75kg\"}",
+          "result": {
+            "calc": "20 km \u00d7 0.17 = 3.4; 3.4 \u00d7 22 = 74.8",
+            "co2": "75kg"
+          },
+          "error": null,
+          "prompt_ms": 81.49,
+          "predicted_ms": 3078.287,
+          "predicted_n": 179,
+          "completion_tokens": 179
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "1. Ingredients:\n   - car trip: 10 km one way\n   - number of days: 22\n\n2. Factor:\n   - car: petrol car = 0.17/km\n\n3. Calculation:\n   - car trip: 10 km \u00d7 0.17 = 1.7\n   - number of days: 22 \u00d7 1.7 = 37.4\n   - total: 1.7 + 37.4 = 39.1\n\n{\"calc\": \"10 km \u00d7 0.17 = 1.7; 22 \u00d7 1.7 = 37.4; total 39.1\", \"co2\": \"39kg\"}",
+          "result": {
+            "calc": "10 km \u00d7 0.17 = 1.7; 22 \u00d7 1.7 = 37.4; total 39.1",
+            "co2": "39kg"
+          },
+          "error": null,
+          "prompt_ms": 19.428,
+          "predicted_ms": 2810.273,
+          "predicted_n": 164,
+          "completion_tokens": 164
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "1. **Ingredients**:\n   - Distance: 10 km (one way)\n   - Duration: 22 workdays (one way, assuming daily commute)\n\n2. **Factor**: \n   - Petrol car = 0.17/km\n   - Multiply by number of days: 10 \u00d7 22 = 220\n\n3. **Calculation**: \n   - 10 km \u00d7 0.17/km = 1.7 kg CO2e\n   - 220 days \u00d7 1.7 = 374 kg CO2e\n\n{\"calc\": \"10 km \u00d7 22 \u00d7 0.17 = 374\", \"co2\": \"370kg\"}",
+          "result": {
+            "calc": "10 km \u00d7 22 \u00d7 0.17 = 374",
+            "co2": "370kg"
+          },
+          "error": null,
+          "prompt_ms": 19.471,
+          "predicted_ms": 2813.716,
+          "predicted_n": 164,
+          "completion_tokens": 164
+        }
+      ]
+    },
+    {
+      "text": "Ate 500g of beef",
+      "expected": 17.5,
+      "attempts": [
+        {
+          "outcome": "wrong_value",
+          "raw_content": "Ingredients: beef, 500g\nFactor: beef = 35/kg\nCalculation: 500 \u00d7 35 = 17500\n{\"calc\": \"500g beef \u00d7 35 = 17500\", \"co2\": \"17500kg\"}",
+          "result": {
+            "calc": "500g beef \u00d7 35 = 17500",
+            "co2": "17500kg"
+          },
+          "error": null,
+          "prompt_ms": 79.719,
+          "predicted_ms": 1216.896,
+          "predicted_n": 72,
+          "completion_tokens": 72
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "Ingredients: beef, 500g\nFactor: beef = 35/kg\nCalculation: 500 \u00d7 35 = 17500\n{\"calc\": \"500g beef \u00d7 35 = 17500\", \"co2\": \"17500kg\"}",
+          "result": {
+            "calc": "500g beef \u00d7 35 = 17500",
+            "co2": "17500kg"
+          },
+          "error": null,
+          "prompt_ms": 17.684,
+          "predicted_ms": 1213.469,
+          "predicted_n": 72,
+          "completion_tokens": 72
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "Ingredients: beef, 500g\nFactor: beef = 35/kg\nCalculation: 500 \u00d7 35 = 17500\n{\"calc\": \"beef 500g \u00d7 35=17500\", \"co2\": \"17500kg\"}",
+          "result": {
+            "calc": "beef 500g \u00d7 35=17500",
+            "co2": "17500kg"
+          },
+          "error": null,
+          "prompt_ms": 18.363,
+          "predicted_ms": 1232.302,
+          "predicted_n": 73,
+          "completion_tokens": 73
+        }
+      ]
+    },
+    {
+      "text": "Bought 2 kg of chicken",
+      "expected": 12,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: chicken, 2 kg\nFactor: chicken = 6/kg\nCalculation: 2 \u00d7 6 = 12\n{\"calc\": \"chicken 2 kg \u00d7 6 = 12\", \"co2\": \"12kg\"}",
+          "result": {
+            "calc": "chicken 2 kg \u00d7 6 = 12",
+            "co2": "12kg"
+          },
+          "error": null,
+          "prompt_ms": 77.507,
+          "predicted_ms": 943.488,
+          "predicted_n": 56,
+          "completion_tokens": 56
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "1. Ingredients: chicken, quantity 2 kg\n2. Factor: chicken = 6/kg\n3. Calculation: 2 \u00d7 6 = 12\n{\"calc\": \"2 kg \u00d7 6 = 12\", \"co2\": \"12kg\"}",
+          "result": {
+            "calc": "2 kg \u00d7 6 = 12",
+            "co2": "12kg"
+          },
+          "error": null,
+          "prompt_ms": 18.179,
+          "predicted_ms": 1025.664,
+          "predicted_n": 61,
+          "completion_tokens": 61
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: chicken, 2 kg\nFactor: chicken = 6/kg\nCalculation: 2 \u00d7 6 = 12\n{\"calc\": \"chicken 2 kg \u00d7 6 = 12\", \"co2\": \"12kg\"}",
+          "result": {
+            "calc": "chicken 2 kg \u00d7 6 = 12",
+            "co2": "12kg"
+          },
+          "error": null,
+          "prompt_ms": 17.604,
+          "predicted_ms": 938.229,
+          "predicted_n": 56,
+          "completion_tokens": 56
+        }
+      ]
+    },
+    {
+      "text": "Charged an electric car with 50 kWh in India",
+      "expected": 35.0,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: electric car charging, 50 kWh, India\nFactor: India electricity = 0.55 kg/kWh\nCalculation: 50 \u00d7 0.55 = 27.5\n{\"calc\": \"50 kWh \u00d7 0.55 = 27.5\", \"co2\": \"28kg\"}",
+          "result": {
+            "calc": "50 kWh \u00d7 0.55 = 27.5",
+            "co2": "28kg"
+          },
+          "error": null,
+          "prompt_ms": 84.549,
+          "predicted_ms": 1318.371,
+          "predicted_n": 78,
+          "completion_tokens": 78
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "### Step 1: Ingredients\n\n- Electric car charging, 50 kWh (electricity)\n- India electricity, 0.55 kg/kWh (REFERENCE VALUES)\n\n### Step 2: Factor\n\n- Electricity per kWh: India average = 0.55 kg CO2e\n\n### Step 3: Calculation\n\n- Multiply quantity (50 kWh) by factor (0.55 kg/kWh)\n- Arithmetic: 50 \u00d7 0.55 = 27.5\n- Sum: no other items\n\n### Final JSON\n\n{\"calc\": \"50 kWh \u00d7 0.55 = 27.5\", \"co2\": \"27.5kg\"}",
+          "result": {
+            "calc": "50 kWh \u00d7 0.55 = 27.5",
+            "co2": "27.5kg"
+          },
+          "error": null,
+          "prompt_ms": 18.105,
+          "predicted_ms": 2741.8,
+          "predicted_n": 160,
+          "completion_tokens": 160
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "# Step-by-step plan\n\n1. **Ingredients**:\n   - Electric car charging: 50 kWh\n   - Region: India\n\n2. **Factor**: India electricity = 0.55 kg/kWh\n\n3. **Calculation**:\n   - 50 kWh \u00d7 0.55 = 27.5\n\n# Final JSON\n{\"calc\": \"50 kWh \u00d7 0.55 = 27.5\", \"co2\": \"27.5kg\"}",
+          "result": {
+            "calc": "50 kWh \u00d7 0.55 = 27.5",
+            "co2": "27.5kg"
+          },
+          "error": null,
+          "prompt_ms": 19.54,
+          "predicted_ms": 1866.19,
+          "predicted_n": 109,
+          "completion_tokens": 109
+        }
+      ]
+    },
+    {
+      "text": "Ran an air conditioner for 3 hours in the USA",
+      "expected": 1.2000000000000002,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "1. Ingredients:\n   - air conditioner: 3 hours\n\n2. Factor: electricity in the USA = 0.37 kg/kWh (see REFERENCE VALUES)\n\n3. Calculation: 3 \u00d7 0.37 = 1.11\n\n{\"calc\": \"3 hours \u00d7 0.37 kg/kWh = 1.11\", \"co2\": \"1.1kg\"}",
+          "result": {
+            "calc": "3 hours \u00d7 0.37 kg/kWh = 1.11",
+            "co2": "1.1kg"
+          },
+          "error": null,
+          "prompt_ms": 85.029,
+          "predicted_ms": 1590.834,
+          "predicted_n": 92,
+          "completion_tokens": 92
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: air conditioner use, 3 hours\nFactor: USA electricity = 0.37 kg/kWh\nCalculation: 3 \u00d7 0.37 = 1.11\n{\"calc\": \"3 hours \u00d7 0.37 kg/kWh = 1.11\", \"co2\": \"1.1kg\"}",
+          "result": {
+            "calc": "3 hours \u00d7 0.37 kg/kWh = 1.11",
+            "co2": "1.1kg"
+          },
+          "error": null,
+          "prompt_ms": 19.144,
+          "predicted_ms": 1286.898,
+          "predicted_n": 76,
+          "completion_tokens": 76
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "1. Ingredients: air conditioner use, 3 hours\n2. Factor: electricity (USA) = 0.37 kg/kWh\n3. Calculation: 3 \u00d7 0.37 = 1.11\n{\"calc\": \"air conditioner \u00d7 0.37 = 1.11\", \"co2\": \"1.1kg\"}",
+          "result": {
+            "calc": "air conditioner \u00d7 0.37 = 1.11",
+            "co2": "1.1kg"
+          },
+          "error": null,
+          "prompt_ms": 18.275,
+          "predicted_ms": 1407.446,
+          "predicted_n": 83,
+          "completion_tokens": 83
+        }
+      ]
+    },
+    {
+      "text": "Ran the dishwasher twice",
+      "expected": 0.6,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "1. Ingredients: dishwasher use, 2 times\n2. Factor: dishwasher load = 0.3 per use (from reference values)\n3. Calculation: 2 \u00d7 0.3 = 0.6\n{\"calc\": \"2 times \u00d7 0.3 = 0.6\", \"co2\": \"0.6kg\"}",
+          "result": {
+            "calc": "2 times \u00d7 0.3 = 0.6",
+            "co2": "0.6kg"
+          },
+          "error": null,
+          "prompt_ms": 61.475,
+          "predicted_ms": 1360.637,
+          "predicted_n": 80,
+          "completion_tokens": 80
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "### Step-by-step breakdown\n\n1. **Ingredients:**\n   - Dishwasher use: 1 use\n   - Electricity per use: Germany 0.38 kg/kWh\n   - Electricity for one use: 0.38 kg/kWh\n   - Total: 0.38 kg\n\n2. **Factor:**\n   - Factor: Germany electricity = 0.38 kg/kWh\n   - No multiplier needed.\n\n3. **Calculation:**\n   - Multiply by the factor: 0.38 kg\n   - Arithmetic: 0.38\n   - Sum (no other items): 0.38\n\n### Final calculation and JSON output\n\n{\"calc\": \"0.38kg\", \"co2\": \"0.38kg\"}",
+          "result": {
+            "calc": "0.38kg",
+            "co2": "0.38kg"
+          },
+          "error": null,
+          "prompt_ms": 17.519,
+          "predicted_ms": 2922.418,
+          "predicted_n": 170,
+          "completion_tokens": 170
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: dishwasher use, 2 uses\nFactor: dishwasher, 1 use = 0.3 kWh, 1 use in Germany = 0.38 kg CO2e\nCalculation: 2 \u00d7 0.3 \u00d7 0.38 = 0.62\n{\"calc\": \"2 \u00d7 0.3 \u00d7 0.38 = 0.62\", \"co2\": \"0.6kg\"}",
+          "result": {
+            "calc": "2 \u00d7 0.3 \u00d7 0.38 = 0.62",
+            "co2": "0.6kg"
+          },
+          "error": null,
+          "prompt_ms": 18.947,
+          "predicted_ms": 1716.467,
+          "predicted_n": 101,
+          "completion_tokens": 101
+        }
+      ]
+    },
+    {
+      "text": "Took a bath",
+      "expected": 1.2,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: bath, 1 person\nFactor: bath 150 l hot water -> heating oil 3.2 per kWh\nCalculation: 150 \u00d7 3.2 \u00d7 0.03 = 1.488\n{\"calc\": \"bath 150 l \u00d7 3.2 \u00d7 0.03 = 1.49\", \"co2\": \"1.5kg\"}",
+          "result": {
+            "calc": "bath 150 l \u00d7 3.2 \u00d7 0.03 = 1.49",
+            "co2": "1.5kg"
+          },
+          "error": null,
+          "prompt_ms": 51.122,
+          "predicted_ms": 1596.951,
+          "predicted_n": 94,
+          "completion_tokens": 94
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "1. Ingredients: bath, 150 liters hot water\n2. Factor: bath = 1.2 kg CO2e/litre\n3. Calculation: 150 \u00d7 1.2 = 180\n{\"calc\": \"bath 150 litres \u00d7 1.2 = 180\", \"co2\": \"180kg\"}",
+          "result": {
+            "calc": "bath 150 litres \u00d7 1.2 = 180",
+            "co2": "180kg"
+          },
+          "error": null,
+          "prompt_ms": 18.142,
+          "predicted_ms": 1436.6,
+          "predicted_n": 85,
+          "completion_tokens": 85
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: bath\nFactor: 1 bath = 1.2 kg CO2e (average European electricity)\nCalculation: 1 \u00d7 1.2 = 1.2\n{\"calc\": \"1 bath \u00d7 1.2 kg CO2e = 1.2\", \"co2\": \"1.2kg\"}",
+          "result": {
+            "calc": "1 bath \u00d7 1.2 kg CO2e = 1.2",
+            "co2": "1.2kg"
+          },
+          "error": null,
+          "prompt_ms": 18.287,
+          "predicted_ms": 1197.336,
+          "predicted_n": 71,
+          "completion_tokens": 71
+        }
+      ]
+    },
+    {
+      "text": "Streamed music for 5 hours",
+      "expected": 0.025,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: music streaming, 5 hours\nFactor: music streaming = 0.005/hour (average)\nCalculation: 5 \u00d7 0.005 = 0.025\n{\"calc\": \"music streaming 5 hours \u00d7 0.005 = 0.025\", \"co2\": \"0.03kg\"}",
+          "result": {
+            "calc": "music streaming 5 hours \u00d7 0.005 = 0.025",
+            "co2": "0.03kg"
+          },
+          "error": null,
+          "prompt_ms": 80.319,
+          "predicted_ms": 1369.626,
+          "predicted_n": 81,
+          "completion_tokens": 81
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: music streaming, 5 hours\nFactor: music streaming = 0.005/hour\nCalculation: 5 \u00d7 0.005 = 0.025\n{\"calc\": \"music streaming 5 hours \u00d7 0.005 = 0.025\", \"co2\": \"0.03kg\"}",
+          "result": {
+            "calc": "music streaming 5 hours \u00d7 0.005 = 0.025",
+            "co2": "0.03kg"
+          },
+          "error": null,
+          "prompt_ms": 18.59,
+          "predicted_ms": 1346.444,
+          "predicted_n": 79,
+          "completion_tokens": 79
+        },
+        {
+          "outcome": "wrong_value",
+          "raw_content": "1. Ingredients: music streaming, duration 5 hours\n2. Factor: electricity per kWh (Germany: 0.38) and streamed data\n3. Calculation: 5 \u00d7 0.38 \u00d7 0.004 = 0.067\n{\"calc\": \"5 hours \u00d7 0.38 kWh \u00d7 0.004 = 0.067\", \"co2\": \"0.07kg\"}",
+          "result": {
+            "calc": "5 hours \u00d7 0.38 kWh \u00d7 0.004 = 0.067",
+            "co2": "0.07kg"
+          },
+          "error": null,
+          "prompt_ms": 18.488,
+          "predicted_ms": 1767.125,
+          "predicted_n": 104,
+          "completion_tokens": 104
+        }
+      ]
+    },
+    {
+      "text": "Bought 10 kg of steel",
+      "expected": 20,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: steel, 10 kg\nFactor: steel = 2 per kg\nCalculation: 10 \u00d7 2 = 20\n{\"calc\": \"steel 10 kg \u00d7 2 = 20\", \"co2\": \"20kg\"}",
+          "result": {
+            "calc": "steel 10 kg \u00d7 2 = 20",
+            "co2": "20kg"
+          },
+          "error": null,
+          "prompt_ms": 80.355,
+          "predicted_ms": 1012.345,
+          "predicted_n": 60,
+          "completion_tokens": 60
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: steel, 10 kg\nFactor: steel = 2 per kg\nCalculation: 10 \u00d7 2 = 20\n{\"calc\": \"steel 10 kg \u00d7 2 = 20\", \"co2\": \"20kg\"}",
+          "result": {
+            "calc": "steel 10 kg \u00d7 2 = 20",
+            "co2": "20kg"
+          },
+          "error": null,
+          "prompt_ms": 19.002,
+          "predicted_ms": 1018.2,
+          "predicted_n": 60,
+          "completion_tokens": 60
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "1. Ingredients: steel 10 kg\n2. Factor: steel = 2 kg/kg\n3. Calculation: 10 \u00d7 2 = 20\n{\"calc\": \"steel 10 kg \u00d7 2 = 20\", \"co2\": \"20kg\"}",
+          "result": {
+            "calc": "steel 10 kg \u00d7 2 = 20",
+            "co2": "20kg"
+          },
+          "error": null,
+          "prompt_ms": 19.113,
+          "predicted_ms": 1111.175,
+          "predicted_n": 66,
+          "completion_tokens": 66
+        }
+      ]
+    },
+    {
+      "text": "Bought a new electric car",
+      "expected": 12000,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: electric car, 1 new unit\nFactor: electric car = 12000 kg CO2e per unit (manufacturing + delivery)\nCalculation: 12000\n{\"calc\": \"electric car = 12000\", \"co2\": \"12000kg\"}",
+          "result": {
+            "calc": "electric car = 12000",
+            "co2": "12000kg"
+          },
+          "error": null,
+          "prompt_ms": 48.391,
+          "predicted_ms": 1194.251,
+          "predicted_n": 71,
+          "completion_tokens": 71
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: electric car, 1 new unit\nFactor: electric car = 12000 kg CO2e per new unit\nCalculation: 1 \u00d7 12000 = 12000\n{\"calc\": \"electric car = 12000\", \"co2\": \"12000kg\"}",
+          "result": {
+            "calc": "electric car = 12000",
+            "co2": "12000kg"
+          },
+          "error": null,
+          "prompt_ms": 18.667,
+          "predicted_ms": 1276.278,
+          "predicted_n": 76,
+          "completion_tokens": 76
+        },
+        {
+          "outcome": "shape_fail",
+          "raw_content": "# OUTPUT FORMAT (STRICT)\n\nFirst, think step by step in plain text (max 4 short lines):\n\n1. Ingredients: list every item/activity identified, each with its quantity and unit (distance, weight, duration, count, or kWh). Use DEFAULT ASSUMPTIONS for anything unstated.\n2. Factor: for each item, name the matching REFERENCE VALUES factor and its number.\n3. Calculation: multiply each quantity by its factor; show the arithmetic; sum if there are multiple items.\n\nThen, on its own final line, with nothing after it, output exactly one line of JSON:\n\n{\"calc\": \"<calc>\", \"co2\": \"<number>kg\"}\n\n<calc>: short restatement of the final arithmetic, e.g. \"25 km \u00d7 0.17\". Ignored by the backend.\n\n<number>:\n\n- Plain decimal, dot separator, no thousands separators, no scientific notation, no spaces.\n- Always kilograms, even for large values (\"2000kg\", never \"2t\").\n- Round to 2 significant figures: 4.25 -> \"4.3kg\", 1685 -> \"1700kg\", 0.0723 -> \"0.072kg\".\n- Negative for savings or removals, e.g. \"-6.8kg\".\n- Not an item/activity (greeting, unrelated question, gibberish): skip steps 1-3 and output only {\"co2\": \"unknown\"}.\n\nDo not put the JSON inside the step-by-step text. Do not repeat the JSON. Do not add any text after the JSON line.\n\n# HOW TO ESTIMATE\n\n1. Identify every item or activity described.\n2. Determine quantity (distance, weight, duration, count, energy); if unstated, use DEFAULT ASSUMPTIONS.\n3. Pick",
+          "result": {
+            "calc": "<calc>",
+            "co2": "<number>kg"
+          },
+          "error": null,
+          "prompt_ms": 18.064,
+          "predicted_ms": 6924.051,
+          "predicted_n": 400,
+          "completion_tokens": 400
+        }
+      ]
+    },
+    {
+      "text": "Threw away 2 kg of mixed waste in landfill",
+      "expected": 1.0,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: mixed waste, 2 kg\nFactor: landfilled waste = 0.5 per kg\nCalculation: 2 \u00d7 0.5 = 1\n{\"calc\": \"mixed waste 2 kg \u00d7 0.5 = 1\", \"co2\": \"1kg\"}",
+          "result": {
+            "calc": "mixed waste 2 kg \u00d7 0.5 = 1",
+            "co2": "1kg"
+          },
+          "error": null,
+          "prompt_ms": 83.723,
+          "predicted_ms": 1076.774,
+          "predicted_n": 64,
+          "completion_tokens": 64
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "1. Ingredients: mixed waste, 2 kg\n2. Factor: landfilled mixed waste = 0.5 per kg\n3. Calculation: 2 \u00d7 0.5 = 1\n{\"calc\": \"2 kg \u00d7 0.5 = 1\", \"co2\": \"1kg\"}",
+          "result": {
+            "calc": "2 kg \u00d7 0.5 = 1",
+            "co2": "1kg"
+          },
+          "error": null,
+          "prompt_ms": 18.127,
+          "predicted_ms": 1140.701,
+          "predicted_n": 68,
+          "completion_tokens": 68
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: mixed waste, 2 kg\nFactor: landfilled mixed waste = 0.5/kg\nCalculation: 2 \u00d7 0.5 = 1\n{\"calc\": \"mixed waste 2 kg \u00d7 0.5 = 1\", \"co2\": \"1kg\"}",
+          "result": {
+            "calc": "mixed waste 2 kg \u00d7 0.5 = 1",
+            "co2": "1kg"
+          },
+          "error": null,
+          "prompt_ms": 18.037,
+          "predicted_ms": 1076.104,
+          "predicted_n": 64,
+          "completion_tokens": 64
+        }
+      ]
+    },
+    {
+      "text": "My diet for a year, average",
+      "expected": 1642.5,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: full diet (meals and drinks) per person per day, 365 days\n\nFactor: average meal = 1.7 meals/day, energy 1.7/serving\n\nCalculation: 1.7 \u00d7 1.7 \u00d7 365 = 1016.85\n\nRounding to 2 significant figures: 1017\n\n{\"calc\": \"1.7 \u00d7 1.7 \u00d7 365 = 1017\", \"co2\": \"1017kg\"}",
+          "result": {
+            "calc": "1.7 \u00d7 1.7 \u00d7 365 = 1017",
+            "co2": "1017kg"
+          },
+          "error": null,
+          "prompt_ms": 77.652,
+          "predicted_ms": 2016.583,
+          "predicted_n": 119,
+          "completion_tokens": 119
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: full diet per person per year (4.5 kg CO2e/serving) \u00d7 365 days = 1642.5\n\nFactor: 4.5 kg CO2e/serving\n\nCalculation: 4.5 \u00d7 365 = 1642.5\n\n{\"calc\": \"4.5 \u00d7 365 = 1642.5\", \"co2\": \"1640kg\"}",
+          "result": {
+            "calc": "4.5 \u00d7 365 = 1642.5",
+            "co2": "1640kg"
+          },
+          "error": null,
+          "prompt_ms": 19.387,
+          "predicted_ms": 1734.087,
+          "predicted_n": 103,
+          "completion_tokens": 103
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: average meal (1.7 per serving) \u00d7 365 days = 627.5\n\nFactor: average meal = 1.7\n\nCalculation: 627.5 \u00d7 1.7 = 1066.75\n\nRound to 2: 1070\n\n{\"calc\": \"average meal \u00d7 365 = 1070\", \"co2\": \"1070kg\"}",
+          "result": {
+            "calc": "average meal \u00d7 365 = 1070",
+            "co2": "1070kg"
+          },
+          "error": null,
+          "prompt_ms": 19.116,
+          "predicted_ms": 1696.06,
+          "predicted_n": 100,
+          "completion_tokens": 100
+        }
+      ]
+    },
+    {
+      "text": "Hello, how are you?",
+      "expected": null,
+      "attempts": [
+        {
+          "outcome": "error",
+          "raw_content": "I can certainly help you estimate the greenhouse gas emissions for various items, activities, purchases, or tasks. Please provide the details of what you'd like me to calculate, and I'll do my best to provide you with an accurate estimate in kg CO2e.",
+          "result": null,
+          "error": "no JSON line found: line 1 column 1 (char 0)",
+          "prompt_ms": 59.416,
+          "predicted_ms": 901.728,
+          "predicted_n": 54,
+          "completion_tokens": 54
+        },
+        {
+          "outcome": "error",
+          "raw_content": "I'm a carbon footprint estimator. What's your question about?",
+          "result": null,
+          "error": "no JSON line found: line 1 column 1 (char 0)",
+          "prompt_ms": 17.974,
+          "predicted_ms": 221.547,
+          "predicted_n": 14,
+          "completion_tokens": 14
+        },
+        {
+          "outcome": "error",
+          "raw_content": "I can help you estimate greenhouse gas emissions for a variety of activities and purchases. Here's how:\n\n### Step-by-Step Breakdown\n\n1. **Ingredients**: List every item/activity identified, each with its quantity and unit.\n   - Ingredients: \n     - Car trip: 25 km\n     - Beef burger: 1 serving\n     - Flight Zurich-London: 780 km (round trip)\n     - Electric car charging: 40 kWh\n     - Train 50 km (alternative to car)\n     - Weather (unrelated, skip this)\n\n2. **Factor**: For each item, name the matching REFERENCE VALUES factor and its number.\n   - Car trip: \n     - petrol car: 0.17/km\n   - Beef burger: \n     - beef: 35/kg\n   - Flight Zurich-London: \n     - distance 780 km >= 500 km -> economy flight factor 0.15/passenger-km\n   - Electric car charging: \n     - Germany electricity = 0.38 kg/kWh\n   - Train 50 km (alternative): \n     - train Europe average = 0.035/km\n   - Weather: skip (unrelated)\n\n3. **Calculation**: Multiply each quantity by its factor; sum if there are multiple items.\n   - **Car trip**: 25 km \u00d7 0.17 = 4.25 kg CO2e\n   - **Beef burger**: 1 \u00d7 35 = 35 kg CO2e\n   - **Flight**: 780 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 252.7 kg CO2e (round trip)\n   - **Electric car charging**: 40 kWh",
+          "result": null,
+          "error": "no JSON line found: line 1 column 1 (char 0)",
+          "prompt_ms": 17.924,
+          "predicted_ms": 6893.9,
+          "predicted_n": 400,
+          "completion_tokens": 400
+        }
+      ]
+    },
+    {
+      "text": "What is the capital of France?",
+      "expected": null,
+      "attempts": [
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 77.631,
+          "predicted_ms": 120.151,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        },
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 17.917,
+          "predicted_ms": 118.497,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        },
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 18.167,
+          "predicted_ms": 118.026,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        }
+      ]
+    },
+    {
+      "text": "asdkjalksdj qwoiuqwoiu",
+      "expected": null,
+      "attempts": [
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 83.283,
+          "predicted_ms": 120.581,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        },
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 17.818,
+          "predicted_ms": 118.61,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        },
+        {
+          "outcome": "correct_unknown",
+          "raw_content": "{\"co2\": \"unknown\"}",
+          "result": {
+            "co2": "unknown"
+          },
+          "error": null,
+          "prompt_ms": 17.845,
+          "predicted_ms": 119.486,
+          "predicted_n": 8,
+          "completion_tokens": 8
+        }
+      ]
+    },
+    {
+      "text": "Tell me a joke",
+      "expected": null,
+      "attempts": [
+        {
+          "outcome": "error",
+          "raw_content": "I'm sorry, as an AI language model, I don't have the ability to tell jokes. However, I can provide you with a quick carbon footprint calculation if that would be helpful. Just let me know!",
+          "result": null,
+          "error": "no JSON line found: line 1 column 1 (char 0)",
+          "prompt_ms": 47.705,
+          "predicted_ms": 734.308,
+          "predicted_n": 44,
+          "completion_tokens": 44
+        },
+        {
+          "outcome": "error",
+          "raw_content": "I'm sorry, but as a carbon footprint estimator, I can't tell jokes. However, if you want to know a fun fact about carbon emissions, I could share one with you! For example, did you know that a single tree can absorb approximately 20 kg of CO2 from the atmosphere each year?",
+          "result": null,
+          "error": "no JSON line found: line 1 column 1 (char 0)",
+          "prompt_ms": 17.96,
+          "predicted_ms": 1086.085,
+          "predicted_n": 65,
+          "completion_tokens": 65
+        },
+        {
+          "outcome": "error",
+          "raw_content": "Sure, here's a classic joke for you:\n\nWhy don't eggs tell jokes?\n\nBecause they might crack each other up!\n\nRemember to tell this joke when you're feeling down\u2014it might just make someone laugh!",
+          "result": null,
+          "error": "no JSON line found: line 1 column 1 (char 0)",
+          "prompt_ms": 17.979,
+          "predicted_ms": 730.0,
+          "predicted_n": 44,
+          "completion_tokens": 44
+        }
+      ]
+    },
+    {
+      "text": "Un vol aller-retour de Gen\u00e8ve \u00e0 Lisbonne",
+      "expected": 486.0,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: retour flight Gen\u00e8ve-Lisbonne, 1500 km\nFactor: distance >=500 km -> economy factor 0.15/passenger-km\nCalculation: 1500 \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 476.8\n{\"calc\": \"1500 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 477\", \"co2\": \"477kg\"}",
+          "result": {
+            "calc": "1500 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 477",
+            "co2": "477kg"
+          },
+          "error": null,
+          "prompt_ms": 80.979,
+          "predicted_ms": 1868.709,
+          "predicted_n": 110,
+          "completion_tokens": 110
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: return flight Gen\u00e8ve-Lisbonne, 1500 km one way\nFactor: distance >= 500 km -> economy flight factor 0.15/passenger-km\nCalculation: 1500 \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 476.48\n{\"calc\": \"1500 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 476.48\", \"co2\": \"480kg\"}",
+          "result": {
+            "calc": "1500 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 476.48",
+            "co2": "480kg"
+          },
+          "error": null,
+          "prompt_ms": 19.225,
+          "predicted_ms": 1995.381,
+          "predicted_n": 118,
+          "completion_tokens": 118
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "### Step-by-step solution\n\n1. **Ingredients**: Flight from Gen\u00e8ve (Switzerland) to Lisbonne (Portugal).\n   - Route: Gen\u00e8ve (ZRH) to Lisbonne (LIS).\n   - Distance: 1500 km (one way).\n   - Economy class.\n   - Round-trip (return journey included).\n\n2. **Factor**: Use the reference for flights:\n   - Distance \u2265 500 km: economy class factor = 0.15 per passenger-km.\n   - Reference great-circle distance for Gen\u00e8ve-Lisbonne: 1500 km.\n\n3. **Calculation**:\n   - Multiply distance by factor:\n     - 1500 km \u00d7 2 (round trip) \u00d7 1.08 (108% uplift for return journey) \u00d7 0.15 (economy class factor) = 448.6\n   - Round to 2 significant figures: 450 kg CO2e.\n\n### JSON Output\n\n{\"calc\": \"1500 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 450\", \"co2\": \"450kg\"}",
+          "result": {
+            "calc": "1500 km \u00d7 2 \u00d7 1.08 \u00d7 0.15 = 450",
+            "co2": "450kg"
+          },
+          "error": null,
+          "prompt_ms": 19.178,
+          "predicted_ms": 4326.278,
+          "predicted_n": 253,
+          "completion_tokens": 253
+        }
+      ]
+    },
+    {
+      "text": "Ich bin 30 km mit dem Zug in der Schweiz gefahren",
+      "expected": 0.24,
+      "attempts": [
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: Zugfahrt, 30 km\nFactor: Zugfahrt Schweiz = 0.008/km (Ref. Zug in der Schweiz/Frankreich)\nCalculation: 30 \u00d7 0.008 = 0.24\n{\"calc\": \"30 km \u00d7 0.008 = 0.24\", \"co2\": \"0.24kg\"}",
+          "result": {
+            "calc": "30 km \u00d7 0.008 = 0.24",
+            "co2": "0.24kg"
+          },
+          "error": null,
+          "prompt_ms": 85.937,
+          "predicted_ms": 1460.044,
+          "predicted_n": 87,
+          "completion_tokens": 87
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: Zugfahrt, 30 km\nFactor: Zugfahrt Schweiz = 0.008/km\nCalculation: 30 \u00d7 0.008 = 0.24\n{\"calc\": \"Zugfahrt 30 km \u00d7 0.008 = 0.24\", \"co2\": \"0.24kg\"}",
+          "result": {
+            "calc": "Zugfahrt 30 km \u00d7 0.008 = 0.24",
+            "co2": "0.24kg"
+          },
+          "error": null,
+          "prompt_ms": 18.034,
+          "predicted_ms": 1360.947,
+          "predicted_n": 81,
+          "completion_tokens": 81
+        },
+        {
+          "outcome": "correct",
+          "raw_content": "Ingredients: Zugfahrt, 30 km\nFactor: Zug Schweiz = 0.008/km\nCalculation: 30 \u00d7 0.008 = 0.24\n{\"calc\": \"Zugfahrt 30 km \u00d7 0.008 = 0.24\", \"co2\": \"0.24kg\"}",
+          "result": {
+            "calc": "Zugfahrt 30 km \u00d7 0.008 = 0.24",
+            "co2": "0.24kg"
+          },
+          "error": null,
+          "prompt_ms": 18.095,
+          "predicted_ms": 1341.118,
+          "predicted_n": 80,
+          "completion_tokens": 80
+        }
+      ]
+    }
+  ]
+}
