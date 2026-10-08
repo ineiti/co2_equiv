@@ -3,7 +3,8 @@ from unittest.mock import AsyncMock, patch
 import pytest
 from fastapi.testclient import TestClient
 
-from app.main import app
+from app.history import load_history
+from app.main import _maybe_save_history, app
 
 client = TestClient(app)
 
@@ -11,6 +12,82 @@ client = TestClient(app)
 @pytest.fixture(autouse=True)
 def _isolated_history_path(tmp_path, monkeypatch):
     monkeypatch.setattr("app.main.HISTORY_PATH", str(tmp_path / "history.json"))
+
+
+def test_maybe_save_history_skips_unknown(tmp_path, monkeypatch):
+    monkeypatch.setattr("app.main.HISTORY_PATH", str(tmp_path / "history.json"))
+    _maybe_save_history("hello", {"co2": "unknown"})
+    assert load_history(str(tmp_path / "history.json")) == []
+
+
+def test_estimate_stream_emits_reasoning_then_result():
+    async def fake_stream_estimate(text, llm_url, system_prompt, client):
+        yield ("reasoning", "thinking")
+        yield ("result", {"calc": "x", "co2": "4.3kg"})
+
+    with patch("app.main.stream_estimate", new=fake_stream_estimate):
+        with client.stream("POST", "/api/estimate/stream", json={"text": "drove 25km"}) as response:
+            lines = list(response.iter_lines())
+
+    assert lines == [
+        "event: reasoning",
+        'data: "thinking"',
+        "",
+        "event: result",
+        'data: {"calc": "x", "co2": "4.3kg"}',
+        "",
+    ]
+
+
+def test_estimate_stream_saves_history_on_result():
+    async def fake_stream_estimate(text, llm_url, system_prompt, client):
+        yield ("result", {"calc": "x", "co2": "4.3kg"})
+
+    with patch("app.main.stream_estimate", new=fake_stream_estimate):
+        with client.stream(
+            "POST", "/api/estimate/stream", json={"text": "drove 25km"}
+        ) as response:
+            list(response.iter_lines())
+
+    [entry] = client.get("/api/history").json()
+    assert entry["co2"] == "4.3kg"
+
+
+def test_estimate_stream_save_false_does_not_record_history():
+    async def fake_stream_estimate(text, llm_url, system_prompt, client):
+        yield ("result", {"calc": "x", "co2": "4.3kg"})
+
+    with patch("app.main.stream_estimate", new=fake_stream_estimate):
+        with client.stream(
+            "POST", "/api/estimate/stream", json={"text": "drove 25km", "save": False}
+        ) as response:
+            list(response.iter_lines())
+
+    assert client.get("/api/history").json() == []
+
+
+def test_estimate_stream_emits_error_event():
+    async def fake_stream_estimate(text, llm_url, system_prompt, client):
+        yield ("reasoning", "oops")
+        yield ("restart", None)
+        yield ("error", "LLM call failed after retry: boom")
+
+    with patch("app.main.stream_estimate", new=fake_stream_estimate):
+        with client.stream("POST", "/api/estimate/stream", json={"text": "drove 25km"}) as response:
+            lines = list(response.iter_lines())
+
+    assert "event: restart" in lines
+    assert "event: error" in lines
+
+
+def test_estimate_stream_empty_text_returns_422():
+    response = client.post("/api/estimate/stream", json={"text": ""})
+    assert response.status_code == 422
+
+
+def test_estimate_stream_missing_text_returns_422():
+    response = client.post("/api/estimate/stream", json={})
+    assert response.status_code == 422
 
 
 def test_get_history_returns_empty_list_when_no_history():

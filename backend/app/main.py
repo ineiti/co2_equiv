@@ -1,4 +1,5 @@
 import asyncio
+import json
 import logging
 import os
 import re
@@ -7,10 +8,11 @@ from datetime import UTC, datetime
 
 import httpx
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from app.history import append_history, load_history
-from app.llm_client import EstimateError, get_estimate, warmup_cache
+from app.llm_client import EstimateError, get_estimate, stream_estimate, warmup_cache
 from app.system_prompt import load_system_prompt
 
 logger = logging.getLogger(__name__)
@@ -43,6 +45,21 @@ class EstimateRequest(BaseModel):
     save: bool = True
 
 
+def _maybe_save_history(text: str, result: dict) -> None:
+    if "calc" not in result or not _CO2_PATTERN.match(result["co2"]):
+        return
+    entry = {
+        "text": text,
+        "calc": result["calc"],
+        "co2": result["co2"],
+        "timestamp": datetime.now(UTC).isoformat(),
+    }
+    try:
+        append_history(HISTORY_PATH, entry)
+    except OSError:
+        logger.exception("failed to write history entry")
+
+
 @app.post("/api/estimate")
 async def estimate(request: EstimateRequest):
     async with httpx.AsyncClient() as client:
@@ -51,19 +68,31 @@ async def estimate(request: EstimateRequest):
         except EstimateError:
             raise HTTPException(status_code=502, detail="estimate unavailable")
 
-    if request.save and "calc" in result and _CO2_PATTERN.match(result["co2"]):
-        entry = {
-            "text": request.text,
-            "calc": result["calc"],
-            "co2": result["co2"],
-            "timestamp": datetime.now(UTC).isoformat(),
-        }
-        try:
-            append_history(HISTORY_PATH, entry)
-        except OSError:
-            logger.exception("failed to write history entry")
+    if request.save:
+        _maybe_save_history(request.text, result)
 
     return result
+
+
+@app.post("/api/estimate/stream")
+async def estimate_stream(request: EstimateRequest):
+    async def event_source():
+        async with httpx.AsyncClient() as client:
+            async for event_type, data in stream_estimate(
+                request.text, LLM_URL, SYSTEM_PROMPT, client
+            ):
+                if event_type == "reasoning":
+                    yield f"event: reasoning\ndata: {json.dumps(data)}\n\n"
+                elif event_type == "restart":
+                    yield "event: restart\ndata: null\n\n"
+                elif event_type == "result":
+                    if request.save:
+                        _maybe_save_history(request.text, data)
+                    yield f"event: result\ndata: {json.dumps(data)}\n\n"
+                elif event_type == "error":
+                    yield f"event: error\ndata: {json.dumps(data)}\n\n"
+
+    return StreamingResponse(event_source(), media_type="text/event-stream")
 
 
 @app.get("/api/history")
