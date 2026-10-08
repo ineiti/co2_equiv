@@ -6,6 +6,7 @@ import {
   buildShareUrl,
   buildShareText,
   normalizeMastodonInstance,
+  parseSseChunk,
 } from './co2.js';
 
 describe('parseCo2', () => {
@@ -117,5 +118,50 @@ describe('normalizeMastodonInstance', () => {
   it('returns empty string for empty or missing input', () => {
     expect(normalizeMastodonInstance('')).toBe('');
     expect(normalizeMastodonInstance(null)).toBe('');
+  });
+});
+
+describe('parseSseChunk', () => {
+  it('parses a single complete event', () => {
+    const result = parseSseChunk('event: reasoning\ndata: hello\n\n');
+    expect(result.events).toEqual([{ type: 'reasoning', data: 'hello' }]);
+    expect(result.remainder).toBe('');
+  });
+
+  it('parses multiple complete events in one buffer', () => {
+    const result = parseSseChunk('event: reasoning\ndata: one\n\nevent: reasoning\ndata: two\n\n');
+    expect(result.events).toEqual([
+      { type: 'reasoning', data: 'one' },
+      { type: 'reasoning', data: 'two' },
+    ]);
+    expect(result.remainder).toBe('');
+  });
+
+  it('leaves an incomplete trailing event in remainder', () => {
+    const result = parseSseChunk('event: reasoning\ndata: one\n\nevent: reasoning\ndata: tw');
+    expect(result.events).toEqual([{ type: 'reasoning', data: 'one' }]);
+    expect(result.remainder).toBe('event: reasoning\ndata: tw');
+  });
+
+  it('completes an event split across two calls when remainder is prepended', () => {
+    const first = parseSseChunk('event: reasoning\ndata: hel');
+    expect(first.events).toEqual([]);
+    expect(first.remainder).toBe('event: reasoning\ndata: hel');
+
+    const second = parseSseChunk(first.remainder + 'lo\n\n');
+    expect(second.events).toEqual([{ type: 'reasoning', data: 'hello' }]);
+    expect(second.remainder).toBe('');
+  });
+
+  it('ignores a buffer with no complete event', () => {
+    const result = parseSseChunk('event: result');
+    expect(result.events).toEqual([]);
+    expect(result.remainder).toBe('event: result');
+  });
+
+  it('returns no events for an empty buffer', () => {
+    const result = parseSseChunk('');
+    expect(result.events).toEqual([]);
+    expect(result.remainder).toBe('');
   });
 });

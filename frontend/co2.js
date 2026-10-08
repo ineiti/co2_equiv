@@ -42,3 +42,28 @@ export function normalizeMastodonInstance(input) {
   if (!instance.includes('.')) return '';
   return instance;
 }
+
+export function parseSseChunk(buffer) {
+  const events = [];
+  let remainder = buffer;
+
+  while (true) {
+    const boundary = remainder.indexOf('\n\n');
+    if (boundary === -1) break;
+
+    const rawEvent = remainder.slice(0, boundary);
+    remainder = remainder.slice(boundary + 2);
+
+    let type = null;
+    let data = null;
+    for (const line of rawEvent.split('\n')) {
+      if (line.startsWith('event: ')) type = line.slice('event: '.length);
+      else if (line.startsWith('data: ')) data = line.slice('data: '.length);
+    }
+    if (type !== null && data !== null) {
+      events.push({ type, data });
+    }
+  }
+
+  return { events, remainder };
+}
