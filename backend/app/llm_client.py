@@ -11,6 +11,18 @@ class EstimateError(Exception):
     pass
 
 
+def _strip_think_block(content: str) -> str:
+    """Drop a leading <think>...</think> block some reasoning models (e.g.
+    Qwen3) emit before the JSON answer. Some chat templates seed the
+    generation with an opening tag that never appears in the returned
+    content, so only the closing tag shows up - take everything after the
+    last </think> rather than matching a full opening/closing pair.
+    An unclosed <think> (truncated output) has no JSON to recover, so it
+    is left as-is and fails JSON parsing as before."""
+    before, found, after = content.rpartition("</think>")
+    return after if found else content
+
+
 def _validate_shape(data: object) -> dict:
     if not isinstance(data, dict):
         raise ValueError(f"expected a JSON object, got: {data!r}")
@@ -38,7 +50,7 @@ async def _call_once(
     content = response.json()["choices"][0]["message"]["content"]
     if not isinstance(content, str):
         raise ValueError(f"expected string content, got: {content!r}")
-    data = json.loads(content)
+    data = json.loads(_strip_think_block(content))
     return _validate_shape(data)
 
 

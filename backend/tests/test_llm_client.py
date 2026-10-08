@@ -26,6 +26,69 @@ async def test_valid_json_passthrough():
 
 @pytest.mark.asyncio
 @respx.mock
+async def test_strips_think_block_before_json():
+    content = '<think>\nsome reasoning here\n</think>\n{"calc": "x", "co2": "4.3kg"}'
+    respx.post(LLM_URL).mock(return_value=httpx.Response(200, json=_openai_response(content)))
+    async with httpx.AsyncClient() as client:
+        result = await get_estimate("drove 25km", LLM_URL, "system prompt", client)
+    assert result == {"calc": "x", "co2": "4.3kg"}
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_strips_up_to_last_closing_think_tag_with_no_opening_tag():
+    # Some chat templates seed the generation with an opening <think> that
+    # never appears in the returned content, so only the closing tag shows up.
+    content = 'reasoning continues\n</think>\n{"calc": "x", "co2": "1kg"}'
+    respx.post(LLM_URL).mock(return_value=httpx.Response(200, json=_openai_response(content)))
+    async with httpx.AsyncClient() as client:
+        result = await get_estimate("test", LLM_URL, "system prompt", client)
+    assert result == {"calc": "x", "co2": "1kg"}
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_empty_think_block_before_json():
+    content = '<think>\n\n</think>{"co2": "unknown"}'
+    respx.post(LLM_URL).mock(return_value=httpx.Response(200, json=_openai_response(content)))
+    async with httpx.AsyncClient() as client:
+        result = await get_estimate("hello", LLM_URL, "system prompt", client)
+    assert result == {"co2": "unknown"}
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_unclosed_think_block_retries_then_raises():
+    # Truncated output (e.g. hit a token/context limit mid-thought): there is
+    # no closing tag, so no JSON can be recovered from the content.
+    content = "<think>\nreasoning that never finishes"
+    respx.post(LLM_URL).mock(return_value=httpx.Response(200, json=_openai_response(content)))
+    async with httpx.AsyncClient() as client:
+        with pytest.raises(EstimateError):
+            await get_estimate("test", LLM_URL, "system prompt", client)
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_reasoning_content_field_ignored_when_content_is_clean_json():
+    response = {
+        "choices": [
+            {
+                "message": {
+                    "content": '{"calc": "x", "co2": "1kg"}',
+                    "reasoning_content": "some separate reasoning",
+                }
+            }
+        ]
+    }
+    respx.post(LLM_URL).mock(return_value=httpx.Response(200, json=response))
+    async with httpx.AsyncClient() as client:
+        result = await get_estimate("test", LLM_URL, "system prompt", client)
+    assert result == {"calc": "x", "co2": "1kg"}
+
+
+@pytest.mark.asyncio
+@respx.mock
 async def test_unknown_passthrough():
     respx.post(LLM_URL).mock(
         return_value=httpx.Response(200, json=_openai_response('{"co2": "unknown"}'))
