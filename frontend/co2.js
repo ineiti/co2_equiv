@@ -1,8 +1,36 @@
-const FACTORS = {
-  plane: 0.15,
-  car: 0.17,
-  train: 0.035,
+// kg CO2e per km of travel, by source of the numbers. The calculation basis
+// differs per source, so the figures are not interchangeable:
+// - desnz: UK DESNZ 2025 conversion factors. Operational emissions; plane is
+//   the short-haul average passenger WITH radiative forcing, car is per
+//   vehicle-km (average car, unknown fuel), train is UK national rail.
+// - ademe: French ADEME Base Empreinte. Lifecycle (fuel upstream, combustion,
+//   manufacturing), per passenger-km; plane is 101-220 seats, 1000-2000 km,
+//   without contrails; car is the average mixed-use car; train is the TGV.
+// - eea: EEA, EU-27 2018 average, well-to-wheel, per passenger-km.
+export const SOURCES = {
+  eea: {
+    label: 'EU average (EEA)',
+    description: 'EU-27 average 2018, well-to-wheel, per passenger-km',
+    url: 'https://www.eea.europa.eu/en/analysis/maps-and-charts/ghg-efficiency-of-different-transport',
+    factors: { plane: 0.16, car: 0.143, train: 0.033 },
+  },
+  desnz: {
+    label: 'UK (DESNZ 2025)',
+    description:
+      'UK conversion factors 2025, operational; plane short-haul with radiative forcing, car per vehicle',
+    url: 'https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025',
+    factors: { plane: 0.12786, car: 0.16725, train: 0.03546 },
+  },
+  ademe: {
+    label: 'France (ADEME)',
+    description:
+      'Base Empreinte, lifecycle incl. manufacturing, per passenger-km; plane without contrails, train is the TGV',
+    url: 'https://data.ademe.fr/datasets/base-carboner',
+    factors: { plane: 0.102, car: 0.16, train: 0.00293 },
+  },
 };
+
+export const DEFAULT_SOURCE = 'eea';
 
 export function parseCo2(co2String) {
   if (typeof co2String !== 'string') return null;
@@ -11,11 +39,12 @@ export function parseCo2(co2String) {
   return parseFloat(match[1]);
 }
 
-export function toDistances(kgCo2) {
+export function toDistances(kgCo2, sourceId = DEFAULT_SOURCE) {
+  const { factors } = SOURCES[sourceId] ?? SOURCES[DEFAULT_SOURCE];
   return {
-    plane: kgCo2 / FACTORS.plane,
-    car: kgCo2 / FACTORS.car,
-    train: kgCo2 / FACTORS.train,
+    plane: kgCo2 / factors.plane,
+    car: kgCo2 / factors.car,
+    train: kgCo2 / factors.train,
   };
 }
 

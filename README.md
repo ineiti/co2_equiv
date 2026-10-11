@@ -48,6 +48,32 @@ part above the distances, and then calculates with
 mean numbers to show the distances of the "co2"
 field.
 
+A switch above the distances selects which source the
+kg of CO2 per km numbers come from; the distances update
+immediately and a link to the source is shown below them.
+The choice is remembered in the browser's local storage.
+There are three sources, all in frontend/co2.js:
+
+- EU average (EEA, default): EU-27 average 2018,
+  well-to-wheel, per passenger-km: plane 0.160, car 0.143,
+  train 0.033 kg CO2e/km. Read from the chart in
+  https://www.eea.europa.eu/en/analysis/maps-and-charts/ghg-efficiency-of-different-transport
+- UK (DESNZ 2025): conversion factors 2025, operational:
+  plane 0.128 (short-haul, average passenger, with radiative
+  forcing), car 0.167 (average car, per vehicle-km), train
+  0.035 (national rail).
+  https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025
+- France (ADEME): Base Empreinte, lifecycle including
+  manufacturing, per passenger-km: plane 0.102 (101-220
+  seats, 1000-2000 km, without contrails, element 43742),
+  car 0.160 (average, mixed use, element 43809), train
+  0.00293 (TGV 2022, element 43256).
+  https://data.ademe.fr/datasets/base-carboner
+
+The calculation bases differ, so the figures are not
+interchangeable; in particular the DESNZ car number is
+per vehicle, the other two are per passenger.
+
 # Setup
 
 This tool uses three docker containers, configured in

@@ -1,6 +1,8 @@
 import {
   parseCo2,
   toDistances,
+  SOURCES,
+  DEFAULT_SOURCE,
   formatHistoryTimestamp,
   buildShareUrl,
   buildShareText,
@@ -10,6 +12,7 @@ import {
 
 const MAX_HISTORY_ENTRIES = 10;
 const MASTODON_INSTANCE_KEY = 'mastodonInstance';
+const SOURCE_KEY = 'co2Source';
 
 const form = document.getElementById('estimate-form');
 const input = document.getElementById('text-input');
@@ -28,6 +31,9 @@ const co2Text = document.getElementById('co2-text');
 const planeDistance = document.getElementById('plane-distance');
 const carDistance = document.getElementById('car-distance');
 const trainDistance = document.getElementById('train-distance');
+const sourceSwitch = document.getElementById('source-switch');
+const sourceLink = document.getElementById('source-link');
+const sourceDescription = document.getElementById('source-description');
 const historySection = document.getElementById('history');
 const historyList = document.getElementById('history-list');
 const shareButtons = document.getElementById('share-buttons');
@@ -37,6 +43,53 @@ const shareLinkedin = document.getElementById('share-linkedin');
 
 let historyEntries = [];
 let currentShare = null;
+let currentKg = null;
+let currentSource = loadSource();
+
+function loadSource() {
+  try {
+    const stored = localStorage.getItem(SOURCE_KEY);
+    if (stored && SOURCES[stored]) return stored;
+  } catch {
+    // storage may be unavailable (private mode); fall back to the default
+  }
+  return DEFAULT_SOURCE;
+}
+
+function renderDistances() {
+  const source = SOURCES[currentSource];
+  for (const button of sourceSwitch.children) {
+    button.setAttribute('aria-checked', String(button.dataset.source === currentSource));
+  }
+  sourceLink.href = source.url;
+  sourceLink.textContent = source.label;
+  sourceDescription.textContent = `— ${source.description}.`;
+  if (currentKg === null) return;
+  const distances = toDistances(currentKg, currentSource);
+  planeDistance.textContent = formatDistance(distances.plane);
+  carDistance.textContent = formatDistance(distances.car);
+  trainDistance.textContent = formatDistance(distances.train);
+}
+
+function setSource(id) {
+  currentSource = id;
+  try {
+    localStorage.setItem(SOURCE_KEY, id);
+  } catch {
+    // non-essential persistence
+  }
+  renderDistances();
+}
+
+for (const [id, source] of Object.entries(SOURCES)) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.setAttribute('role', 'radio');
+  button.dataset.source = id;
+  button.textContent = source.label;
+  button.addEventListener('click', () => setSource(id));
+  sourceSwitch.appendChild(button);
+}
 
 function renderHistory() {
   historySection.hidden = historyEntries.length === 0;
@@ -126,6 +179,7 @@ function renderResult(text, data, save) {
   if (kg === null) {
     calcText.textContent = '';
     co2Text.textContent = "Couldn't estimate that — try describing it differently.";
+    currentKg = null;
     planeDistance.textContent = '';
     carDistance.textContent = '';
     trainDistance.textContent = '';
@@ -135,12 +189,10 @@ function renderResult(text, data, save) {
     return;
   }
 
-  const distances = toDistances(kg);
   calcText.textContent = data.calc ?? '';
   co2Text.textContent = `${kg}kg CO2e`;
-  planeDistance.textContent = formatDistance(distances.plane);
-  carDistance.textContent = formatDistance(distances.car);
-  trainDistance.textContent = formatDistance(distances.train);
+  currentKg = kg;
+  renderDistances();
   currentShare = { text, co2: data.co2 };
   shareButtons.hidden = false;
   showState({ showResult: true });
@@ -148,6 +200,8 @@ function renderResult(text, data, save) {
     addToHistory({ text, calc: data.calc, co2: data.co2, timestamp: new Date().toISOString() });
   }
 }
+
+renderDistances();
 
 let currentRunController = null;
 

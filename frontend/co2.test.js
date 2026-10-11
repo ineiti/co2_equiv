@@ -2,6 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import {
   parseCo2,
   toDistances,
+  SOURCES,
+  DEFAULT_SOURCE,
   formatHistoryTimestamp,
   buildShareUrl,
   buildShareText,
@@ -30,12 +32,50 @@ describe('parseCo2', () => {
   });
 });
 
+describe('SOURCES', () => {
+  it('has at most three sources, each with factors and an https link', () => {
+    const ids = Object.keys(SOURCES);
+    expect(ids.length).toBeGreaterThan(0);
+    expect(ids.length).toBeLessThanOrEqual(3);
+    for (const id of ids) {
+      const source = SOURCES[id];
+      expect(source.label).toBeTruthy();
+      expect(source.url).toMatch(/^https:\/\//);
+      for (const mode of ['plane', 'car', 'train']) {
+        expect(source.factors[mode]).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('uses a default source that exists', () => {
+    expect(SOURCES[DEFAULT_SOURCE]).toBeDefined();
+  });
+
+  it('holds the published factors in kg CO2e per km', () => {
+    expect(SOURCES.desnz.factors).toEqual({ plane: 0.12786, car: 0.16725, train: 0.03546 });
+    expect(SOURCES.ademe.factors).toEqual({ plane: 0.102, car: 0.16, train: 0.00293 });
+    expect(SOURCES.eea.factors).toEqual({ plane: 0.16, car: 0.143, train: 0.033 });
+  });
+});
+
 describe('toDistances', () => {
   it('computes plane/car/train distances from a positive kg value', () => {
+    const f = SOURCES[DEFAULT_SOURCE].factors;
     const d = toDistances(4.3);
-    expect(d.plane).toBeCloseTo(4.3 / 0.15, 5);
-    expect(d.car).toBeCloseTo(4.3 / 0.17, 5);
-    expect(d.train).toBeCloseTo(4.3 / 0.035, 5);
+    expect(d.plane).toBeCloseTo(4.3 / f.plane, 5);
+    expect(d.car).toBeCloseTo(4.3 / f.car, 5);
+    expect(d.train).toBeCloseTo(4.3 / f.train, 5);
+  });
+
+  it('uses the factors of the requested source', () => {
+    const d = toDistances(4.3, 'ademe');
+    expect(d.plane).toBeCloseTo(4.3 / 0.102, 5);
+    expect(d.car).toBeCloseTo(4.3 / 0.16, 5);
+    expect(d.train).toBeCloseTo(4.3 / 0.00293, 5);
+  });
+
+  it('falls back to the default source for an unknown source id', () => {
+    expect(toDistances(4.3, 'nope')).toEqual(toDistances(4.3));
   });
 
   it('computes negative distances for negative kg (savings)', () => {

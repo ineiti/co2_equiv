@@ -66,6 +66,11 @@
       <div id="result" hidden>
         <p id="calc-text"></p>
         <p id="co2-text"></p>
+        <div
+          id="source-switch"
+          role="radiogroup"
+          aria-label="Source of the CO2 per km numbers"
+        ></div>
         <div class="distance-row">
           <span class="icon">✈️</span>
           <span id="plane-distance"></span>
@@ -78,6 +83,10 @@
           <span class="icon">🚆</span>
           <span id="train-distance"></span>
         </div>
+        <p id="source-info" class="notice">
+          Numbers from <a id="source-link" target="_blank" rel="noopener noreferrer"></a>
+          <span id="source-description"></span>
+        </p>
         <div id="share-buttons" hidden>
           <button type="button" id="share-mastodon">Share on Mastodon</button>
           <button type="button" id="share-threads">Share on Threads</button>
